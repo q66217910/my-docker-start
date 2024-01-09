@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  postgresql:
+    image: docker.repo.swifer.co/sp/postgresql:14.2.0-debian-10-r68
+    container_name: postgresql
+    ports:
+      - '5432:5432'
+    volumes:
+      - '/e/data/postgresql:/bitnami/postgresql'
+    environment:
+      - 'POSTGRESQL_DATABASE=backstage_server'
+      - 'POSTGRESQL_USERNAME=wftapp'
+      - 'POSTGRESQL_PASSWORD=wft2022'
