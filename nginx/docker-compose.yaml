@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  nginx:
+    image: docker.io/bitnami/nginx:1.25
+    container_name: nginx
+    ports:
+      - '8080:8080'
+    volumes:
+#      - ./conf/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
+      - ./conf/bitnami/spay.conf:/opt/bitnami/nginx/conf/bitnami/spay.conf
