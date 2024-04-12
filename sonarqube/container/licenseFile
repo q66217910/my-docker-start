@@ -1,0 +1,11 @@
+Company=Unknown
+Digest=NotRequired
+Edition=Enterprise
+EditionLabel=Enterprise
+Expiration=2099-01-01
+MaxLoc=9223372036854775806
+Plugins=abap,cpp,plsql,security,sonarapex,swift,tsql,vbnet,cobol,pli,rpg,vb
+Features=*
+ServerId=*
+Support=false
+Type=ny0c
