@@ -7,7 +7,7 @@ services:
       - "9876:9876"
     volumes:
       - ./logs:/opt/logs
-      - ./store:/opt/store
+      - ./data:/opt/store
     networks:
       rocketmq:
         aliases:
@@ -21,7 +21,7 @@ services:
       - "10911:10911"
     volumes:
       - ./logs:/opt/logs
-      - ./store:/opt/store
+      - ./data:/opt/store
       - ./conf/broker.conf:/etc/rocketmq/broker.conf
     environment:
       NAMESRV_ADDR: "nameserver:9876"
