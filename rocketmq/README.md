@@ -1,0 +1,1 @@
+启动前需要修改broker.conf文件中的brokerIP1为本机ip地址

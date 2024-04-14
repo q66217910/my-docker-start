@@ -72,3 +72,7 @@ application.pid
 # NetBeans specific files/directories
 .nbattrs
 *.orig
+
+
+*/data
+*/logs
