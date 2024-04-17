@@ -8,8 +8,11 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - .data/postgresql:/bitnami/postgresql
+      - ./data/postgresql:/bitnami/postgresql
+      - ./bitnami/postgresql/conf/:/bitnami/postgresql/conf
     environment:
       - 'POSTGRESQL_DATABASE=backstage_server'
       - 'POSTGRESQL_USERNAME=wftapp'
       - 'POSTGRESQL_PASSWORD=wft2022'
+      - 'POSTGRESQL_POSTGRES_PASSWORD=wft2022'
+      - 'ALLOW_EMPTY_PASSWORD=yes'
