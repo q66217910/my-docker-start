@@ -1,0 +1,21 @@
+version: '3.3'
+
+networks:
+  confluence:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.100.0/24
+services:
+  confluence-server:
+    image: docker.repo.swifer.co/atlassian/confluence-server:8.8.0-sp
+    ports:
+      - '8090:8090'
+    volumes:
+      - ./data/atlassian/application-data/confluence:/var/atlassian/application-data/confluence
+    environment:
+      - JVM_MINIMUM_MEMORY=3072m
+      - JVM_MAXIMUM_MEMORY=3072m
+      - JVM_RESERVED_CODE_CACHE_SIZE=512m
+    networks:
+      - confluence
