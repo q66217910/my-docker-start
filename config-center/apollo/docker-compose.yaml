@@ -1,0 +1,45 @@
+version: "3.5"
+
+services:
+  apollo:
+    image: docker.repo.swifer.co/nobodyiam/apollo-quick-start
+    container_name: apollo
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+      - "8070:8070"
+      - "8090:8090"
+    links:
+      - db
+    environment:
+      JAVA_OPTS: '-Xms100m -Xmx1000m -Xmn100m -Xss256k -XX:MetaspaceSize=10m -XX:MaxMetaspaceSize=250m'
+    networks:
+      apollo:
+        aliases:
+          - apollo
+  db:
+    image: docker.repo.swifer.co/bitnami/mysql:8.3
+    container_name: apollo-db
+    restart: always
+    environment:
+      ALLOW_EMPTY_PASSWORD: yes
+    healthcheck:
+      test: [ 'CMD', '/opt/bitnami/scripts/mysql/healthcheck.sh' ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+    ports:
+      - "13306:3306"
+    volumes:
+      - ./data/mysql:/bitnami/mysql/data
+      - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      apollo:
+        aliases:
+          - db
+networks:
+  apollo:
+    name: apollo
+    driver: bridge
