@@ -15,10 +15,6 @@ services:
       - db
     environment:
       JAVA_OPTS: '-Xms100m -Xmx1000m -Xmn100m -Xss256k -XX:MetaspaceSize=10m -XX:MaxMetaspaceSize=250m'
-    networks:
-      apollo:
-        aliases:
-          - apollo
   db:
     image: docker.repo.swifer.co/bitnami/mysql:8.3
     container_name: apollo-db
@@ -35,11 +31,8 @@ services:
     volumes:
       - ./data/mysql:/bitnami/mysql/data
       - ./sql:/docker-entrypoint-initdb.d
-    networks:
-      apollo:
-        aliases:
-          - db
 networks:
-  apollo:
-    name: apollo
-    driver: bridge
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.3.0/24
