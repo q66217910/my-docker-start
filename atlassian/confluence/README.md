@@ -14,6 +14,12 @@ docker build -t xxxx -f container/Dockerfile .
 docker-compose up -d
 ```
 
+获取破解码
+
+```shell
+java -jar /var/atlassian/atlassian-agent.jar -d -m test@test.com -n BAT -p 'conf' -o http://localhost:8090 -s ${server-id}
+```
+
 ## 3.问题记录
 
 ### 3-1.邮箱问题
@@ -29,6 +35,6 @@ docker exec -it xxxx /bin/bash
 ```
 3. 执行语句
 ```shell
-java -jar /var/atlassian/atlassian-agent.jar -d -m test@test.com -n BAT -p 'conf' -o http://localhost:8090 -s ${应用密钥}
+java -jar /var/atlassian/atlassian-agent.jar -d -m test@test.com -n BAT -p '{应用密钥}' -o http://localhost:8090 -s ${server-id}
 ```
 4. 将执行完成的密钥,回填至界面
