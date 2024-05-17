@@ -7,5 +7,6 @@ services:
     ports:
       - '8080:8080'
     volumes:
-#      - ./conf/nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
-      - ./conf/bitnami/spay.conf:/opt/bitnami/nginx/conf/bitnami/spay.conf
+      - type: bind
+        source: ./conf/server_blocks
+        target: /opt/bitnami/nginx/conf/server_blocks

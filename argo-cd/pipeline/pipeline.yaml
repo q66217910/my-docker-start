@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wallyt-cms-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    - chart: sp-svr
+      repoURL:  https://repo.swifer.co/artifactory/charts
+      targetRevision: 1.8.1
+      helm:
+        releaseName: sp-svr
+        valueFiles:
+          - values.yaml
+    - repoURL: https://gitlab.wallyt.com/devops/tiqmo/configs/deploy-config/deploy-config-tiqmo.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: standard
