@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wallyt-cms-service
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - chart: sp-svr
+      repoURL:  https://repo.swifer.co/artifactory/charts
+      targetRevision: 1.8.1
+      helm:
+        releaseName: wallyt-cms-service
+        valueFiles:
+          - $deploy/apps/ksa/test/values.yaml
+          - $deploy/apps/ksa/test/wallyt-cms-service/values.yaml
+        valuesObject:
+          mountAppConfigV2:
+            enabled: true
+    - repoURL: https://gitlab.wallyt.com/devops/tiqmo/configs/deploy-config/deploy-config-tiqmo.git
+      targetRevision: HEAD
+      ref: deploy
+    - repoURL: https://gitlab.wallyt.com/devops/tiqmo/configs/service-config/service-config-tiqmo.git
+      targetRevision: HEAD
+      path: ksa/wallyt-cms-service/test
+      ref: service
+      plugin:
+        name: my-plugin-v1.0
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: standard

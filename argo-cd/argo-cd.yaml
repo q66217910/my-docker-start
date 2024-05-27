@@ -21675,6 +21675,9 @@ spec:
       serviceAccountName: argocd-applicationset-controller
       volumes:
         - configMap:
+            name: my-plugin-config
+          name: my-plugin-config
+        - configMap:
             name: argocd-ssh-known-hosts-cm
           name: ssh-known-hosts
         - configMap:
@@ -21976,6 +21979,21 @@ spec:
               weight: 5
       automountServiceAccountToken: false
       containers:
+        - name: my-plugin
+          command: [ /var/run/argocd/argocd-cmp-server ]
+          image: docker.repo.swifer.co/bitnami/nginx:1.19.10-debian-10-r94
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+          volumeMounts:
+            - mountPath: /var/run/argocd
+              name: var-files
+            - mountPath: /tmp
+              name: tmp
+            - mountPath: /home/argocd/cmp-server/plugins
+              name: plugins
+            - mountPath: /home/argocd/cmp-server/config
+              name: my-plugin-config
         - args:
             - /usr/local/bin/argocd-repo-server
           env:
@@ -22205,6 +22223,10 @@ spec:
               name: helm-working-dir
             - mountPath: /home/argocd/cmp-server/plugins
               name: plugins
+            - mountPath: /home/argocd/cmp-server/config/create-service-config.sh
+              subPath: create-service-config.sh
+              name: my-plugin-config
+
       initContainers:
         - command:
             - /bin/cp
@@ -22257,6 +22279,12 @@ spec:
           name: var-files
         - emptyDir: {}
           name: plugins
+        - configMap:
+            name: my-plugin-config
+            defaultMode: 493
+          name: my-plugin-config
+        - emptyDir: { }
+          name: cmp-tmp
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -22825,6 +22853,14 @@ spec:
           image: quay.io/argoproj/argocd:v2.11.0
           imagePullPolicy: Always
           name: argocd-application-controller
+          command:
+            - argocd-application-controller
+            - --status-processors
+            - "20"
+            - --operation-processors
+            - "10"
+            - --repo-server-timeout-seconds
+            - "180"
           ports:
             - containerPort: 8082
           readinessProbe:
@@ -23022,3 +23058,63 @@ spec:
       app.kubernetes.io/name: argocd-server
   policyTypes:
     - Ingress
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-plugin-config
+data:
+  create-service-config.sh: |
+    #!/bin/bash
+
+    set -ex
+    
+    declare -A file_map # 定义关联数组
+    
+    path=$(pwd)
+    ## 查询目录下所有的文件
+    listFileString=$(find "$path" -type f)
+
+    # 检查变量是否为空，如果不为空则开始循环
+    if [ -n "$listFileString" ]; then
+      # 将换行符作为分隔符，读取每一项为一个文件路径
+      while IFS= read -r file; do
+        # 提取文件名
+        filename=$(basename "$file")
+        # 读取文件内容并转换为base64
+        content_base64=$(base64 "$file")
+
+        # 将文件名作为key，base64内容作为value，添加到关联数组中
+        file_map["$filename"]=$content_base64
+        # 输出当前处理的文件及其base64内容
+      done <<< "$listFileString"
+    fi
+    
+    secretContent="""
+    kind: Secret
+    apiVersion: v1
+    metadata:
+      name: $ARGOCD_APP_NAME-app-config
+      namespace: $ARGOCD_APP_NAMESPACE
+    data:
+    """
+    
+    for key in "${!file_map[@]}"; do
+        # 添加每一对键值到secretContent
+        line=$(printf "%s: %s\n" "$key" "$(echo -n "${file_map[$key]}" | tr -d '\n')")
+        secretContent+="    $line"
+    done
+    
+     # 输出完整的secretContent
+    echo -e "$secretContent"
+  plugin.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: my-plugin
+    spec:
+      version: v1.0
+      init:
+        command: [sh, -c, 'echo "Initializing..."']
+      generate:
+        command: [sh, -c, '/home/argocd/cmp-server/config/create-service-config.sh']
