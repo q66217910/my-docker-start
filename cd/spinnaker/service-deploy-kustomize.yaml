@@ -1,0 +1,154 @@
+apiVersion: spinnaker.io/v1alpha2
+kind: SpinnakerService
+metadata:
+  name: spinnaker
+spec:
+  # Patching of generated service or deployment by Spinnaker service.
+  # Like in Kustomize, several patch types are supported. See
+  # https://github.com/armory/spinnaker-operator/blob/master/doc/options.md#speckustomize
+  kustomize:
+    clouddriver:
+        deployment:
+          patchesStrategicMerge:
+            - |
+              spec:
+                template:
+                  spec:
+                    volumes:
+                    - name: tmp
+                      emptyDir: {}
+                    containers:
+                    - name: clouddriver
+                      volumeMounts:
+                      - name: tmp
+                        mountPath: /tmp
+                      livenessProbe:
+                        exec:
+                          command:
+                            - wget
+                            - '--no-check-certificate'
+                            - '--spider'
+                            - '-q'
+                            - http://localhost:7002/health
+                        initialDelaySeconds: 180
+    rosco:
+      deployment:
+        patchesStrategicMerge:
+          - |
+            spec:
+              template:
+                spec:
+                  containers:
+                  - name: rosco
+                    livenessProbe:
+                      exec:
+                        command:
+                          - wget
+                          - '--no-check-certificate'
+                          - '--spider'
+                          - '-q'
+                          - http://localhost:8087/health
+                      initialDelaySeconds: 180
+    orca:
+      deployment:
+        patchesStrategicMerge:
+          - |
+            spec:
+              template:
+                spec:
+                  containers:
+                  - name: orca
+                    livenessProbe:
+                      exec:
+                        command:
+                          - wget
+                          - '--no-check-certificate'
+                          - '--spider'
+                          - '-q'
+                          - http://localhost:8083/health
+                      initialDelaySeconds: 180
+    echo:
+      deployment:
+        patchesStrategicMerge:
+          - |
+            spec:
+              template:
+                spec:
+                  containers:
+                  - name: echo
+                    livenessProbe:
+                      exec:
+                        command:
+                          - wget
+                          - '--no-check-certificate'
+                          - '--spider'
+                          - '-q'
+                          - http://localhost:8089/health
+                      initialDelaySeconds: 180
+    gate:
+      deployment:
+        patchesStrategicMerge:
+          - |
+            spec:
+              template:
+                spec:
+                  containers:
+                  - name: gate
+                    livenessProbe:
+                      exec:
+                        command:
+                          - wget
+                          - '--no-check-certificate'
+                          - '--spider'
+                          - '-q'
+                          - http://localhost:8084/health
+                      initialDelaySeconds: 180
+    igor:
+      deployment:
+        patchesStrategicMerge:
+          - |
+            spec:
+              template:
+                spec:
+                  containers:
+                  - name: igor
+                    livenessProbe:
+                      exec:
+                        command:
+                          - wget
+                          - '--no-check-certificate'
+                          - '--spider'
+                          - '-q'
+                          - http://localhost:8088/health
+                      initialDelaySeconds: 180
+    front50:
+      deployment:
+        patchesStrategicMerge:
+          - |
+            spec:
+              template:
+                spec:
+                  containers:
+                  - name: front50
+                    livenessProbe:
+                      exec:
+                        command:
+                          - wget
+                          - '--no-check-certificate'
+                          - '--spider'
+                          - '-q'
+                          - http://localhost:8080/health
+                      initialDelaySeconds: 180
+    deck:
+      deployment:
+        patchesStrategicMerge:
+          - |
+            spec:
+              template:
+                spec:
+                  containers:
+                  - name: deck
+                    livenessProbe:
+                      tcpSocket:
+                        port: 9000
+                      initialDelaySeconds: 180

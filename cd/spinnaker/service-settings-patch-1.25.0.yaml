@@ -1,0 +1,31 @@
+apiVersion: spinnaker.io/v1alpha2
+kind: SpinnakerService
+metadata:
+  name: spinnaker
+spec:
+  # spec.spinnakerConfig - This section is how to specify configuration spinnaker
+  spinnakerConfig:
+    # spec.spinnakerConfig.service-settings - This section contains the YAML of the service's service-setting
+    # see https://www.spinnaker.io/reference/halyard/custom/#tweakable-service-settings for available settings
+    service-settings:
+      clouddriver: 
+        artifactId: docker.repo.swifer.co/spinnaker-community/clouddriver:7.3.3-20210322155326
+      deck:
+        artifactId: docker.repo.swifer.co/spinnaker-community/deck:3.6.1-20210329201325
+      echo: 
+        artifactId: docker.repo.swifer.co/spinnaker-community/echo:2.16.0-20210208200018
+      fiat: 
+        # artifactId: docker.repo.swifer.co/spinnaker-community/clouddriver:7.3.3-20210322155326
+      front50: 
+        artifactId: docker.repo.swifer.co/spinnaker-community/front50:0.26.2-20210216140019
+      gate: 
+        artifactId: docker.repo.swifer.co/spinnaker-community/gate:1.21.0-20210215200018
+      igor: 
+        artifactId: docker.repo.swifer.co/spinnaker-community/igor:1.15.0-20210208200018
+      kayenta: {}
+      orca: 
+        artifactId: docker.repo.swifer.co/spinnaker-community/orca:2.19.0-20210209140018
+      rosco:
+        artifactId: docker.repo.swifer.co/spinnaker-community/rosco:0.24.0-20210210110018
+      redis:
+        artifactId: docker.repo.swifer.co/spinnaker-community/redis-cluster:v2

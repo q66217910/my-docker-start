@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- spinnaker-service.yaml
+# - ingress.yaml
+# - tls.yaml
+generators:
+- ./secret-generator.yaml
+# Apply the patches top down order
+# - kubeconfig-files-patch.test.yml
+patches:
+- path: config-patch.yaml
+- path: profiles-patch.yaml
+# - path: files-patch.yaml
+# 节点选择，如果不需要，注释掉
+- path: service-node-selector.yaml
+- path: service-settings-patch-1.25.0.yaml
+- path: service-deploy-kustomize.yaml

@@ -1,0 +1,62 @@
+apiVersion: spinnaker.io/v1alpha2
+kind: SpinnakerService
+metadata:
+  name: spinnaker # name doesn't matter since this is a patch
+spec:
+  # spec.spinnakerConfig - This section is how to specify configuration spinnaker
+  spinnakerConfig:
+    # spec.spinnakerConfig.profiles - This section contains the YAML of each service's profile
+    profiles:
+      clouddriver: # is the contents of ~/.hal/default/profiles/clouddriver.yml
+        kubernetes:
+          checkApplicationInFront50: true
+      # deck has a special key "settings-local.js" for the contents of settings-local.js
+      deck:
+        # settings-local.js - contents of ~/.hal/default/profiles/settings-local.js
+        # Use the | YAML symbol to indicate a block-style multiline string
+        settings-local.js: |
+          window.spinnakerSettings.feature.kustomizeEnabled = true;
+          window.spinnakerSettings.feature.artifactsRewrite = true;
+#          window.spinnakerSettings.feature.managedServiceAccounts = true;
+      echo: # is the contents of ~/.hal/default/profiles/echo.yml
+        spinnaker:
+          extensibility:
+            plugins:
+              Armory.NotificationAgent:
+                enabled: true
+                armory.httpNotificationService:
+                  config:
+                    url: "http://config-helper:8080/webhooks/echo"
+            repositories:
+              spPluginRepo:
+                url: "https://gitlab.swifer.co/fbu-open/utils-tools/-/raw/master/spinnaker-plugin-config/plugin.json"
+      fiat: # is the contents of ~/.hal/default/profiles/fiat.yml
+        resource:
+          provider:
+            clouddriver:
+              loadApplications: false
+            auth:
+              group-membership:
+                service: backstage
+                backstage:
+                  roleProviderType: BACKSTAGE
+                  backstage-server-url: "http://backstage-server.test.swifer.co"
+                  super-admins:
+                    - abc
+              enabled: true
+            fiat:
+              admin:
+                roles:
+                  - devops-admin
+                  - spin-admin
+      front50: # is the contents of ~/.hal/default/profiles/front50.yml
+        spinnaker.s3.versioning: false
+
+      gate: {} # is the contents of ~/.hal/default/profiles/gate.yml
+      igor: {} # is the contents of ~/.hal/default/profiles/igor.yml
+      kayenta: {} # is the contents of ~/.hal/default/profiles/kayenta.yml
+      orca: # is the contents of ~/.hal/default/profiles/orca.yml
+        front50.useTriggeredByEndpoint: true
+#        tasks:
+#          useManagedServiceAccounts: true
+      rosco: {} # is the contents of ~/.hal/default/profiles/rosco.yml

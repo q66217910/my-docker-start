@@ -1,0 +1,43 @@
+apiVersion: spinnaker.io/v1alpha2
+kind: SpinnakerService
+metadata:
+  name: spinnaker
+spec:
+  # spec.spinnakerConfig - This section is how to specify configuration spinnaker
+  spinnakerConfig:
+    config: 
+      deploymentEnvironment:
+        tolerations: 
+          spin-clouddriver: &common-tolerations
+            - key: "k8s.sp.io/dedicated"
+              operator: "Equal"
+              value: "hpc"
+              effect: "NoSchedule"
+          spin-deck: *common-tolerations
+          spin-echo: *common-tolerations
+          spin-fiat: *common-tolerations
+          spin-front50: *common-tolerations
+          spin-gate: *common-tolerations
+          spin-igor: *common-tolerations
+          spin-orca: *common-tolerations
+          spin-rosco: *common-tolerations
+          spin-redis: *common-tolerations
+            
+    # spec.spinnakerConfig.service-settings - This section contains the YAML of the service's service-setting
+    # see https://www.spinnaker.io/reference/halyard/custom/#tweakable-service-settings for available settings
+     
+    service-settings:
+      clouddriver:  &common-k8s
+        kubernetes: 
+          nodeSelector:
+            k8s.sp.io/dedicated: hpc
+      deck: *common-k8s
+      echo: *common-k8s
+      fiat: *common-k8s
+      front50: *common-k8s
+      gate: *common-k8s
+      igor: *common-k8s
+      kayenta: *common-k8s
+      orca: *common-k8s
+      rosco: *common-k8s
+      redis: *common-k8s

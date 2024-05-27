@@ -1,0 +1,345 @@
+apiVersion: spinnaker.io/v1alpha2
+kind: SpinnakerService
+metadata:
+  name: spinnaker
+spec:
+  # spec.spinnakerConfig - This section is how to specify configuration spinnaker
+  spinnakerConfig:
+    # spec.spinnakerConfig.config - This section contains the contents of a deployment found in a halconfig .deploymentConfigurations[0]
+    config:
+      # version: 1.17.1  # the version of Spinnaker to be deployed
+      version: 1.31.0
+      providers:
+        dockerRegistry:
+          enabled: true
+          accounts:
+            - name: sp
+              requiredGroupMembership: []
+              permissions: {}
+              address: https://docker.repo.swifer.co
+              email: fake.email@spinnaker.io
+              cacheIntervalSeconds: 120
+              clientTimeoutMillis: 60000
+              cacheThreads: 1
+              paginateSize: 100
+              sortTagsByDate: false
+              trackDigests: false
+              insecureRegistry: false
+              repositories: []
+              repositoriesRegex: sp.*
+          primaryAccount: sp
+        google:
+          enabled: false
+          accounts: []
+          bakeryDefaults:
+            templateFile: gce.json
+            baseImages: []
+            zone: us-central1-f
+            network: default
+            useInternalIp: false
+        huaweicloud:
+          enabled: false
+          accounts: []
+          bakeryDefaults:
+            baseImages: []
+        kubernetes:
+          enabled: true
+          accounts:
+            - name: k8s-test
+              requiredGroupMembership: []
+              permissions: {}
+              dockerRegistries: []
+              providerVersion: V2
+              context: kubernetes-admin@kubernetes
+              configureImagePullSecrets: true
+              cacheThreads: 1
+              namespaces: []
+              omitNamespaces: ["kube-system"]
+              kinds: []
+              omitKinds: []
+              customResources: []
+              cachingPolicies: []
+              # kubeconfigFile: /home/spinnaker/.kube/config2
+              kubeconfigFile: kubeconfig-local
+              rawResourcesEndpointConfig:
+                kindExpressions: []
+                omitKindExpressions: []
+              oAuthScopes: []
+              onlySpinnakerManaged: true
+          primaryAccount: k8s-test
+      deploymentEnvironment:
+        customSizing:
+          clouddriver:
+            requests:
+              cpu: 3
+              memory: 6Gi
+            limits:
+              cpu: 4
+              memory: 8Gi
+          rosco:
+            requests:
+              cpu: 20m
+              memory: 400Mi
+            limits:
+              cpu: 1
+              memory: 2Gi
+          orca:
+            requests:
+              cpu: 200m
+              memory: 1500Mi
+            limits:
+              cpu: 1
+              memory: 2Gi
+          igor:
+            requests:
+              cpu: 20m
+              memory: 500Mi
+            limits:
+              cpu: 1
+              memory: 1000Mi
+          gate:
+            requests:
+              cpu: 50m
+              memory: 500Mi
+            limits:
+              cpu: 500m
+              memory: 1000Mi
+          echo:
+            requests:
+              cpu: 50m
+              memory: 500Mi
+            limits:
+              cpu: 1
+              memory: 1000Mi
+          deck:
+            requests:
+              cpu: 10m
+              memory: 50Mi
+            limits:
+              cpu: 500m
+              memory: 500Mi
+        size: SMALL
+        type: Distributed
+        accountName: k8s-test
+        imageVariant: SLIM
+        updateVersions: true
+        consul:
+          enabled: false
+        vault:
+          enabled: false
+        sidecars: {}
+        initContainers: {}
+        hostAliases: {}
+        affinity: {}
+        tolerations: {}
+        nodeSelectors: {}
+        gitConfig:
+          upstreamUser: spinnaker
+        # livenessProbeConfig:
+        #   enabled: true
+        #   initialDelaySeconds: 300
+        haServices:
+          clouddriver:
+            enabled: false
+            disableClouddriverRoDeck: false
+          echo:
+            enabled: false
+      persistentStorage:
+        persistentStoreType: s3
+        azs: {}
+        gcs:
+          rootFolder: front50
+        redis:
+          host: spin-redis.spinnaker
+          port: 6379
+        s3:
+          bucket: spinnaker
+          rootFolder: front50
+          pathStyleAccess: true
+          endpoint: http://192.168.3.226:9000
+          accessKeyId: spinnaker
+          secretAccessKey: spinnaker.101
+        oracle: {}
+      features:
+        chaos: false
+        pipelineTemplates: true
+        managedPipelineTemplatesV2UI: true
+      metricStores:
+        datadog:
+          enabled: false
+          tags: []
+        prometheus:
+          enabled: false
+          add_source_metalabels: true
+        stackdriver:
+          enabled: false
+        newrelic:
+          enabled: false
+          tags: []
+        period: 30
+        enabled: false
+      notifications:
+        slack:
+          enabled: false
+        twilio:
+          enabled: false
+          baseUrl: https://api.twilio.com/
+        github-status:
+          enabled: false
+      timezone: Asia/Shanghai
+      ci:
+        jenkins:
+          enabled: false
+          masters: []
+        travis:
+          enabled: false
+          masters: []
+        wercker:
+          enabled: false
+          masters: []
+        concourse:
+          enabled: false
+          masters: []
+        gcb:
+          enabled: false
+          accounts: []
+        codebuild:
+          enabled: false
+          accounts: []
+      repository:
+        artifactory:
+          enabled: false
+          searches: []
+        nexus:
+          enabled: false
+          searches: []
+      security:
+        apiSecurity:
+          ssl:
+            enabled: false
+          overrideBaseUrl: http://spin-api.fbu.swiftpass.xyz
+        uiSecurity:
+          ssl:
+            enabled: false
+          overrideBaseUrl: http://spin.fbu.swiftpass.xyz
+        authn:
+          oauth2:
+            enabled: true
+            client:
+              clientId: e4ff411bfa6ff35424da92ad39e442e8aea926b3cf776dbfb76cc1c1a2dff855
+              clientSecret: 8f7d68a334f355f0734756a8159911ad479b722bf4a9dd46ad7be252b46422a0
+              accessTokenUri: https://gitlab.swifer.co/oauth/token
+              userAuthorizationUri: https://gitlab.swifer.co/oauth/authorize
+              scope: profile,read_user,openid,email
+            resource:
+              userInfoUri: https://gitlab.swifer.co/oauth/userinfo
+            userInfoMapping:
+              email: email
+              username: username
+            provider: OTHER
+          saml:
+            enabled: false
+            userAttributeMapping: {}
+          ldap:
+            enabled: false
+          x509:
+            enabled: false
+          iap:
+            enabled: false
+          enabled: true
+        authz:
+          groupMembership:
+            service: EXTERNAL
+            google:
+              roleProviderType: GOOGLE
+            github:
+              roleProviderType: GITHUB
+            file:
+              roleProviderType: FILE
+            ldap:
+              roleProviderType: LDAP
+          enabled: false
+      artifacts:
+        bitbucket:
+          enabled: false
+          accounts: []
+        gcs:
+          enabled: false
+          accounts: []
+        oracle:
+          enabled: false
+          accounts: []
+        github:
+          enabled: false
+          accounts: []
+        gitlab:
+          enabled: false
+          accounts: []
+        gitrepo:
+          enabled: true
+          accounts:
+            - name: gitlab-swifer
+              username: spinnaker
+              token: ""
+              sshTrustUnknownHosts: false
+        http:
+          enabled: false
+          accounts:
+            - name: gitlab-file
+              username: spinnaker
+              password: ""
+        helm:
+          enabled: true
+          accounts:
+            - name: sp-helm-account
+              repository: http://repo.swifer.co/artifactory/charts
+        s3:
+          enabled: false
+          accounts: []
+        maven:
+          enabled: false
+          accounts: []
+        templates: []
+      pubsub:
+        enabled: false
+        google:
+          enabled: false
+          pubsubType: GOOGLE
+          subscriptions: []
+          publishers: []
+      canary:
+        enabled: false
+        serviceIntegrations:
+          - name: google
+            enabled: false
+            accounts: []
+            gcsEnabled: false
+            stackdriverEnabled: false
+          - name: prometheus
+            enabled: false
+            accounts: []
+          - name: datadog
+            enabled: false
+            accounts: []
+          - name: signalfx
+            enabled: false
+            accounts: []
+          - name: aws
+            enabled: false
+            accounts: []
+            s3Enabled: false
+          - name: newrelic
+            enabled: false
+            accounts: []
+        reduxLoggerEnabled: true
+        defaultJudge: NetflixACAJudge-v1.0
+        stagesEnabled: true
+        templatesEnabled: true
+        showAllConfigsEnabled: true
+      spinnaker:
+        extensibility:
+          plugins: {}
+          repositories: {}
+      webhook:
+        trust:
+          enabled: false
