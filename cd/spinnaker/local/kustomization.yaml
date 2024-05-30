@@ -5,7 +5,7 @@ resources:
 # - ingress.yaml
 # - tls.yaml
 generators:
-- ./secret-generator.yaml
+- secret-generator.yaml
 # Apply the patches top down order
 # - kubeconfig-files-patch.test.yml
 patches:
@@ -14,5 +14,5 @@ patches:
 # - path: files-patch.yaml
 # 节点选择，如果不需要，注释掉
 - path: service-node-selector.yaml
-- path: service-settings-patch-1.25.0.yaml
+- path: service-settings-patch-1.34.2.yaml
 - path: service-deploy-kustomize.yaml

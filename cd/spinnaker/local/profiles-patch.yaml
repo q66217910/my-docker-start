@@ -7,9 +7,18 @@ spec:
   spinnakerConfig:
     # spec.spinnakerConfig.profiles - This section contains the YAML of each service's profile
     profiles:
-      clouddriver: # is the contents of ~/.hal/default/profiles/clouddriver.yml
+      clouddriver:
+        spinnaker:
+          extensibility:
+            plugins:
+              Swiftpass.SpinnakerPluginKubernetesClient:
+                enabled: true
+            repositories:
+              spPluginRepo:
+                url: "https://gitlab.swifer.co/fbu-open/utils-tools/-/raw/master/spinnaker-plugin-config/plugins.json"
         kubernetes:
           checkApplicationInFront50: true
+#        logging.level.root: DEBUG
       # deck has a special key "settings-local.js" for the contents of settings-local.js
       deck:
         # settings-local.js - contents of ~/.hal/default/profiles/settings-local.js
@@ -29,7 +38,7 @@ spec:
                     url: "http://config-helper:8080/webhooks/echo"
             repositories:
               spPluginRepo:
-                url: "https://gitlab.swifer.co/fbu-open/utils-tools/-/raw/master/spinnaker-plugin-config/plugin.json"
+                url: "https://gitlab.swifer.co/fbu-open/utils-tools/-/raw/master/spinnaker-plugin-config/plugins.json"
       fiat: # is the contents of ~/.hal/default/profiles/fiat.yml
         resource:
           provider:

@@ -27,6 +27,20 @@ spec:
               insecureRegistry: false
               repositories: []
               repositoriesRegex: sp.*
+            - name: hsty
+              requiredGroupMembership: []
+              permissions: {}
+              address: https://docker-hsty.repo.swifer.co
+              email: fake.email@spinnaker.io
+              cacheIntervalSeconds: 180
+              clientTimeoutMillis: 60000
+              cacheThreads: 1
+              paginateSize: 100
+              sortTagsByDate: false
+              trackDigests: false
+              insecureRegistry: false
+              repositories: []
+              repositoriesRegex: sp.*
           primaryAccount: sp
         google:
           enabled: false
@@ -52,15 +66,15 @@ spec:
               providerVersion: V2
               context: kubernetes-admin@kubernetes
               configureImagePullSecrets: true
-              cacheThreads: 1
+              cacheThreads: 4
               namespaces: []
               omitNamespaces: ["kube-system"]
               kinds: []
-              omitKinds: []
+              omitKinds: ["customResourceDefinition"]
               customResources: []
               cachingPolicies: []
               # kubeconfigFile: /home/spinnaker/.kube/config2
-              kubeconfigFile: kubeconfig-local
+              kubeconfigFile: kubeconfig-test
               rawResourcesEndpointConfig:
                 kindExpressions: []
                 omitKindExpressions: []
@@ -71,7 +85,7 @@ spec:
         customSizing:
           clouddriver:
             requests:
-              cpu: 3
+              cpu: 1
               memory: 6Gi
             limits:
               cpu: 4
@@ -217,11 +231,11 @@ spec:
         apiSecurity:
           ssl:
             enabled: false
-          overrideBaseUrl: http://spin-api.fbu.swiftpass.xyz
+          overrideBaseUrl: http://localhost:8084
         uiSecurity:
           ssl:
             enabled: false
-          overrideBaseUrl: http://spin.fbu.swiftpass.xyz
+          overrideBaseUrl: http://localhost:9000
         authn:
           oauth2:
             enabled: true

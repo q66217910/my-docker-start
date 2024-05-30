@@ -7,12 +7,8 @@ spec:
   spinnakerConfig:
     config: 
       deploymentEnvironment:
-        tolerations: 
+        tolerations:
           spin-clouddriver: &common-tolerations
-            - key: "k8s.sp.io/dedicated"
-              operator: "Equal"
-              value: "hpc"
-              effect: "NoSchedule"
           spin-deck: *common-tolerations
           spin-echo: *common-tolerations
           spin-fiat: *common-tolerations
@@ -28,9 +24,6 @@ spec:
      
     service-settings:
       clouddriver:  &common-k8s
-        kubernetes: 
-          nodeSelector:
-            k8s.sp.io/dedicated: hpc
       deck: *common-k8s
       echo: *common-k8s
       fiat: *common-k8s
