@@ -71,7 +71,7 @@ spec:
                           - '--spider'
                           - '-q'
                           - http://localhost:8083/health
-                      initialDelaySeconds: 180
+                      initialDelaySeconds: 181
     echo:
       deployment:
         patchesStrategicMerge:

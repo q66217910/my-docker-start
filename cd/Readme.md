@@ -42,3 +42,7 @@ kubectl.exe apply -f crd/spinnaker.io_spinnakerservices.yaml -n spinnaker
 ```shell
 kustomize build | kubectl  apply -f -
 ```
+
+```shell
+kustomize build --enable-alpha-plugins --enable-exec . | kubectl apply -f - -n spinnaker
+```

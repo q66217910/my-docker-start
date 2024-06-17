@@ -13,6 +13,8 @@ spec:
             plugins:
               Swiftpass.SpinnakerPluginKubernetesClient:
                 enabled: true
+              Swiftpass.SpinnakerPluginClouddriverDocker:
+                enabled: true
             repositories:
               spPluginRepo:
                 url: "https://gitlab.swifer.co/fbu-open/utils-tools/-/raw/master/spinnaker-plugin-config/plugins.json"
