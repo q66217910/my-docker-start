@@ -10,8 +10,8 @@ import hudson.tools.JDKInstaller.JDKRevision.*
 Jenkins.instance.setNumExecutors(0) // Recommended to not run builds on the built-in node
 
 //工具安装
-def openJdk8 = new JDK('jdk8', '/usr/local/jdk8u292-b10') as java.lang.Object
+def oracleJdk8 = new JDK('oracle-jdk8', '/opt/java/oracle-jdk8') as java.lang.Object
 // 获取或创建全局工具配置
 def toolInstallations = Jenkins.instance.getDescriptorByType(hudson.model.JDK.DescriptorImpl)
-toolInstallations.add(openJdk8)
+toolInstallations.add(oracleJdk8)
 toolInstallations.save()

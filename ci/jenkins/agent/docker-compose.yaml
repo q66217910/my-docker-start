@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   jenkins-agent:
-    image: jenkins/inbound-agent
+    image: docker.repo.swifer.co/sp_library/jenkins-agent:lts-sp
     network_mode: host
     environment:
       JENKINS_URL: http://localhost:8080
