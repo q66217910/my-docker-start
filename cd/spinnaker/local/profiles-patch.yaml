@@ -63,7 +63,15 @@ spec:
       front50: # is the contents of ~/.hal/default/profiles/front50.yml
         spinnaker.s3.versioning: false
 
-      gate: {} # is the contents of ~/.hal/default/profiles/gate.yml
+      gate:
+        spinnaker:
+          extensibility:
+            plugins:
+              Swiftpass.SpinnakerPluginClouddriverDocker:
+                enabled: true
+            repositories:
+              spPluginRepo:
+                url: "https://gitlab.swifer.co/fbu-open/utils-tools/-/raw/master/spinnaker-plugin-config/plugins.json"
       igor: {} # is the contents of ~/.hal/default/profiles/igor.yml
       kayenta: {} # is the contents of ~/.hal/default/profiles/kayenta.yml
       orca: # is the contents of ~/.hal/default/profiles/orca.yml

@@ -35,7 +35,7 @@ spec:
                             - '--spider'
                             - '-q'
                             - http://localhost:7002/health
-                        initialDelaySeconds: 181
+                        initialDelaySeconds: 180
     rosco:
       deployment:
         patchesStrategicMerge:
@@ -99,6 +99,9 @@ spec:
                 spec:
                   containers:
                   - name: gate
+                    env:
+                    - name: JAVA_OPTS
+                      value: '-XX:MaxRAMPercentage=50.0 -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8001'
                     livenessProbe:
                       exec:
                         command:
