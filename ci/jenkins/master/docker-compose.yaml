@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  jenkins:
+    image: docker.repo.swifer.co/sp_library/jenkins:lts-sp
+    ports:
+      - '8080:8080'
+      - '50000:50000'
+    environment:
+      - DEV_IN_BANK=true
+      - LC_ALL=C.UTF-8
+      - LANG=C.UTF-8
+      - file.encoding=UTF-8
+      - JAVA_TOOL_OPTIONS="-Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8"
+    volumes:
+      - ./data/agent:/var/jenkins_home
+      - ./data/workspace:/home/jenkins/workspace

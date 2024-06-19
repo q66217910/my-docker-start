@@ -1,0 +1,12 @@
+version: '3.3'
+
+services:
+  jenkins-agent:
+    image: jenkins/inbound-agent
+    network_mode: host
+    environment:
+      JENKINS_URL: http://localhost:8080
+      JENKINS_SECRET: 1e7aea56c2445a6a91f83ec90cca8d34527b6d72b7b21d3ea8319853801d3203
+      JENKINS_AGENT_NAME: node1
+    volumes:
+      - ./data:/home/jenkins/agent
