@@ -12,6 +12,9 @@ services:
       - LANG=C.UTF-8
       - file.encoding=UTF-8
       - JAVA_TOOL_OPTIONS="-Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8"
+      - BUILDER_USER="builder"
+      - BUILDER_PASSWORD="builder123"
     volumes:
       - ./data/agent:/var/jenkins_home
       - ./data/workspace:/home/jenkins/workspace
+      - ./init.groovy.d:/usr/share/jenkins/ref/init.groovy.d
