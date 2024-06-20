@@ -1,0 +1,16 @@
+version: '3.3'
+services:
+  eureka-server:
+    image: springcloud/demo-eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - '8761:8761'
+    environment:
+      - EUREKA_SERVER_PORT=8761  # 设置Eureka Server端口
+      - JAVA_OPTS=-Djava.security.egd=file:/dev/./urandom  # 可选，优化Java安全随机数生成器的性能
+    networks:
+      - eureka-net
+
+networks:
+  eureka-net:
+    driver: bridge
