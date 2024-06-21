@@ -6,14 +6,14 @@ services:
     ports:
       - '8080:8080'
       - '50000:50000'
+    env_file:
+      - ./conf/config.env
     environment:
       - DEV_IN_BANK=true
       - LC_ALL=C.UTF-8
       - LANG=C.UTF-8
       - file.encoding=UTF-8
       - JAVA_TOOL_OPTIONS="-Dsun.jnu.encoding=UTF-8 -Dfile.encoding=UTF-8"
-      - BUILDER_USER="builder"
-      - BUILDER_PASSWORD="builder123"
     volumes:
       - ./data/agent:/var/jenkins_home
       - ./data/workspace:/home/jenkins/workspace

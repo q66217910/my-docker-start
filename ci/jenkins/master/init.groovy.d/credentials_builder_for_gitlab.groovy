@@ -12,7 +12,7 @@ credentialDescription="builder user for gitlab"
 credentialUser=System.getenv('BUILDER_USER')
 credentialPassword=System.getenv('BUILDER_PASSWORD')
 
-println "--> credentialUser ${credentialUser}"
+println "==============创建gitlab证书开始========================"
 
 def instance = Jenkins.getInstance()
 
@@ -27,4 +27,6 @@ credentials = new UsernamePasswordCredentialsImpl(
         credentialPassword)
 
 credentials_store.addCredentials(global_domain, credentials)
-println "--> Added credential"
+
+
+println "==============创建gitlab证书结束========================"

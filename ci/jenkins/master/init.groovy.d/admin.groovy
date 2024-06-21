@@ -5,7 +5,7 @@ import hudson.security.*
 //默认设置admin账号
 def instance = Jenkins.getInstance()
 
-println "--> creating local user 'admin'"
+println "==============创建admin用户开始========================"
 
 def hudsonRealm = new HudsonPrivateSecurityRealm(false) as java.lang.Object
 hudsonRealm.createAccount('admin','admin')
@@ -15,3 +15,5 @@ def strategy = new FullControlOnceLoggedInAuthorizationStrategy() as java.lang.O
 instance.setAuthorizationStrategy(strategy)
 
 instance.save()
+
+println "==============创建admin用户结束========================"
