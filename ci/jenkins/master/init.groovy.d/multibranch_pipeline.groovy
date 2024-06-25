@@ -63,5 +63,9 @@ gitRepos.forEach { gitRepo ->
 
     jenkins.save()
 
+    println "==============新建流水线${jobName}成功========================"
+
 }
+
+println "==============新建流水线完成========================"
 
