@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=sonarqube:10.4.1-enterprise
+ARG BASE_IMAGE=sonarqube:enterprise
 
 FROM $BASE_IMAGE AS source
 
