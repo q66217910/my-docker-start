@@ -18,3 +18,6 @@ services:
       - ./data/agent:/var/jenkins_home
       - ./data/workspace:/home/jenkins/workspace
       - ./init.groovy.d:/usr/share/jenkins/ref/init.groovy.d
+networks:
+  jenkins:
+    driver: bridge
