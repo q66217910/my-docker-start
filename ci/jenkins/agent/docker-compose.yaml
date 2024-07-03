@@ -6,7 +6,7 @@ services:
     network_mode: host
     environment:
       JENKINS_URL: http://localhost:8080
-      JENKINS_SECRET: c9378760939172a7d568dcb13cc559a471a9b31c9a89dcc1cc6f4f599c1a9b1d
+      JENKINS_SECRET: 97f5dd46be51d58431d2153b0634e5e2ac3f6ba7d871a867fb3f8ea714ccc6e6
       JENKINS_AGENT_NAME: node1
     volumes:
       - ./data:/home/jenkins/agent
