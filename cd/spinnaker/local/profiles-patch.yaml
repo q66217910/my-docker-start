@@ -7,6 +7,17 @@ spec:
   spinnakerConfig:
     # spec.spinnakerConfig.profiles - This section contains the YAML of each service's profile
     profiles:
+      spinnaker:
+        spinnaker:
+          extensibility:
+            plugins:
+              Swiftpass.SpinnakerPluginChatbot:
+                id: Swiftpass.SpinnakerPluginChatbot
+                enabled: true
+                version: 0.0.1
+            repositories:
+              spPluginRepo:
+                url: "https://gitlab.swifer.co/fbu-open/utils-tools/-/raw/master/spinnaker-plugin-config/plugins.json"
       clouddriver:
         spinnaker:
           extensibility:
@@ -23,8 +34,6 @@ spec:
 #        logging.level.root: DEBUG
       # deck has a special key "settings-local.js" for the contents of settings-local.js
       deck:
-        # settings-local.js - contents of ~/.hal/default/profiles/settings-local.js
-        # Use the | YAML symbol to indicate a block-style multiline string
         settings-local.js: |
           window.spinnakerSettings.feature.kustomizeEnabled = true;
           window.spinnakerSettings.feature.artifactsRewrite = true;
@@ -66,6 +75,12 @@ spec:
       gate:
         spinnaker:
           extensibility:
+            deck-proxy:
+              enabled: true
+              plugins:
+                Swiftpass:
+                  SpinnakerPluginChatbot:
+                    enabled: true
             plugins:
               Swiftpass.SpinnakerPluginClouddriverDocker:
                 enabled: true
