@@ -4,9 +4,12 @@ services:
   jenkins-agent:
     image: docker.repo.swifer.co/sp_library/jenkins-agent:lts-sp
     network_mode: host
+    env_file:
+      - ../conf/common.env
     environment:
       JENKINS_URL: http://localhost:8080
-      JENKINS_SECRET: 97f5dd46be51d58431d2153b0634e5e2ac3f6ba7d871a867fb3f8ea714ccc6e6
+      JENKINS_SECRET: 8d373f37fc3bd647897f6247b280b9280dbed1f32d4411c4e79c56c282e7fd95
       JENKINS_AGENT_NAME: node1
     volumes:
-      - ./data:/home/jenkins/agent
+      - ./data/agent:/home/jenkins/agent
+      - ./data/workspace:/home/workspace

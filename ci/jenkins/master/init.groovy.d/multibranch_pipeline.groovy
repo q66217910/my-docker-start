@@ -10,6 +10,7 @@ import jenkins.plugins.git.*
 import org.jenkinsci.plugins.workflow.multibranch.*
 import com.cloudbees.hudson.plugins.folder.*
 import jenkins.plugins.git.traits.CleanBeforeCheckoutTrait
+import jenkins.plugins.git.traits.BranchDiscoveryTrait
 import hudson.plugins.git.extensions.impl.CleanBeforeCheckout
 import com.cloudbees.hudson.plugins.folder.computed.DefaultOrphanedItemStrategy
 
@@ -36,7 +37,7 @@ gitRepos.forEach { gitRepo ->
         mbp.getProjectFactory().setScriptPath(jobScript)
 
         // Add git repo
-        String id = "unneeded-non-null-ID"
+        String id = UUID.randomUUID().toString()
         String remote = gitRepo
         String includes = "*"
         String excludes = ""
@@ -48,9 +49,10 @@ gitRepos.forEach { gitRepo ->
         CleanBeforeCheckout cleanCheckout = new CleanBeforeCheckout()
         cleanCheckout.setDeleteUntrackedNestedRepositories(true)
         CleanBeforeCheckoutTrait cleanBeforeCheckoutTrait = new CleanBeforeCheckoutTrait(cleanCheckout)
+        BranchDiscoveryTrait branchDiscoveryTrait =  new BranchDiscoveryTrait()
 
         //设置配置
-        gitSCMSource.setTraits([cleanBeforeCheckoutTrait])
+        gitSCMSource.setTraits([branchDiscoveryTrait,cleanBeforeCheckoutTrait])
 
         PersistedList sources = mbp.getSourcesList()
         sources.clear()

@@ -11,4 +11,6 @@ RUN mkdir -p /opt/maven/apache-maven-3.8.4 && cd /opt/maven/apache-maven-3.8.4 &
         curl -LfsSo /opt/maven/apache-maven-3.8.4/apache-maven-3.8.4-bin.tar.gz https://repo.swifer.co:443/artifactory/one-click-deploy/maven/apache-maven-3.8.4-bin.tar.gz && \
         tar -xvf apache-maven-3.8.4-bin.tar.gz --strip-components=1 && rm -rf apache-maven-3.8.4-bin.tar.gz
 
+RUN mkdir -p /home/workspace && chown -R jenkins:jenkins /home/workspace
+
 USER jenkins
