@@ -9,7 +9,7 @@ services:
       - '8080:8080'
       - '50000:50000'
     env_file:
-      - ./conf/config.env
+      - ../conf/config.env
       - ../conf/common.env
     volumes:
       - ./data/agent:/var/jenkins_home

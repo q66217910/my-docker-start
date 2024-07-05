@@ -16,7 +16,7 @@ for (i = 1; i < nodeNum + 1; i++) {
     // 配置代理节点的参数
     def nodeParams = [
             name             : "node${i}",
-            remoteFS         : '/home/workspace', // 代理节点上的工作空间路径
+            remoteFS         : '/home/jenkins/workspace', // 代理节点上的工作空间路径
             labels           : 'maven', // 为节点分配的标签
             mode             : Node.Mode.NORMAL,
             retentionStrategy: RetentionStrategy.Always.INSTANCE, // 保留策略，这里始终保留

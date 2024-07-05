@@ -9,9 +9,10 @@ def instance = Jenkins.getInstance()
 def jdkTool = instance.getDescriptor("hudson.model.JDK")
 
 def oracleJdk8 = new JDK("oracle-jdk8", "/opt/java/oracle-jdk8") as java.lang.Object;
+def openJdk11 = new JDK("jdk11", "/opt/java/openjdk11") as java.lang.Object;
 def openjdk17 = new JDK("jdk17", "/opt/java/openjdk") as java.lang.Object;
 
-jdkTool.setInstallations(oracleJdk8,openjdk17)
+jdkTool.setInstallations(oracleJdk8,openjdk17,openJdk11)
 jdkTool.save()
 
 println "==============安装JDK工具结束========================"

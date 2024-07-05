@@ -6,10 +6,12 @@ services:
     network_mode: host
     env_file:
       - ../conf/common.env
+      - ../conf/config.env
     environment:
       JENKINS_URL: http://localhost:8080
-      JENKINS_SECRET: 8d373f37fc3bd647897f6247b280b9280dbed1f32d4411c4e79c56c282e7fd95
+      JENKINS_SECRET: ced049eb35d1df8cdc4e597ff946d251bdffe511b998746de4464c504ed60d16
       JENKINS_AGENT_NAME: node1
     volumes:
+      - ./data/workspace:/home/jenkins/workspace
       - ./data/agent:/home/jenkins/agent
-      - ./data/workspace:/home/workspace
+      - ./data/repo:/home/jenkins/repo
