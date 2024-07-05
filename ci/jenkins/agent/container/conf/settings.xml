@@ -6,31 +6,31 @@
   <servers>
     <server>
       <username>${env.MAVEN_USERNAME}</username>
-      <password>${env.MAVEN_PASSWORD}}</password>
+      <password>${env.MAVEN_PASSWORD}</password>
       <id>public</id>
     </server>
     <server>
       <username>${env.MAVEN_USERNAME}</username>
-      <password>${env.MAVEN_PASSWORD}}</password>
+      <password>${env.MAVEN_PASSWORD}</password>
       <id>sp-releases-v2</id>
     </server>
     <server>
       <username>${env.MAVEN_USERNAME}</username>
-      <password>${env.MAVEN_PASSWORD}}</password>
+      <password>${env.MAVEN_PASSWORD}</password>
       <id>sp-snapshots-v2</id>
     </server>
     <!-- docker -->
     <server>
-      <id>docker.repo.swifer.co</id>
-      <username>${env.MAVEN_USERNAME}</username>
-      <password>${env.MAVEN_PASSWORD}}</password>
+      <id>${env.DOCKER_REPO_URL}</id>
+      <username>${env.DOCKER_USERNAME}</username>
+      <password>${env.DOCKER_PASSWORD}</password>
     </server>
   </servers>
   <mirrors>
     <mirror>
       <mirrorOf>*</mirrorOf>
       <name>public</name>
-      <url>${env.REPO_URL}</url>
+      <url>${env.MAVEN_REPO_URL}</url>
       <id>public</id>
     </mirror>
   </mirrors>
@@ -48,13 +48,13 @@
           </snapshots>
           <id>sp-releases-v2</id>
           <name>releases</name>
-          <url>${env.REPO_RELEASES_URL}</url>
+          <url>${env.MAVEN_REPO_RELEASES_URL}</url>
         </repository>
         <repository>
           <snapshots />
           <id>sp-snapshots-v2</id>
           <name>snapshots</name>
-          <url>${env.REPO_SNAPSHOTS_URL}</url>
+          <url>${env.MAVEN_REPO_SNAPSHOTS_URL}</url>
         </repository>
       </repositories>
       <pluginRepositories>
@@ -64,13 +64,13 @@
           </snapshots>
           <id>sp-releases-v2</id>
           <name>public</name>
-          <url>${env.REPO_RELEASES_URL}</url>
+          <url>${env.MAVEN_REPO_RELEASES_URL}</url>
         </pluginRepository>
         <pluginRepository>
           <snapshots />
           <id>sp-snapshots-v2</id>
           <name>public</name>
-          <url>${env.REPO_SNAPSHOTS_URL}</url>
+          <url>${env.MAVEN_REPO_SNAPSHOTS_URL}</url>
         </pluginRepository>
       </pluginRepositories>
       <id>sp</id>
