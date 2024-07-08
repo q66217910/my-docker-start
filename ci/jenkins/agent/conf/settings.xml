@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <localRepository>/home/jenkins/repo</localRepository>
+    <servers>
+        <server>
+            <username>${env.MAVEN_USERNAME}</username>
+            <password>${env.MAVEN_PASSWORD}</password>
+            <id>public</id>
+        </server>
+        <server>
+            <username>${env.MAVEN_USERNAME}</username>
+            <password>${env.MAVEN_PASSWORD}</password>
+            <id>sp-releases-v2</id>
+        </server>
+        <server>
+            <username>${env.MAVEN_USERNAME}</username>
+            <password>${env.MAVEN_PASSWORD}</password>
+            <id>sp-snapshots-v2</id>
+        </server>
+        <!-- docker -->
+        <server>
+            <id>${env.DOCKER_REPO_URL}</id>
+            <username>${env.DOCKER_USERNAME}</username>
+            <password>${env.DOCKER_PASSWORD}</password>
+        </server>
+    </servers>
+    <mirrors>
+        <mirror>
+            <mirrorOf>*</mirrorOf>
+            <name>public</name>
+            <url>${env.MAVEN_REPO_URL}</url>
+            <id>public</id>
+        </mirror>
+    </mirrors>
+    <pluginGroups>
+        <pluginGroup>cn.swiftpass.feynman.builds</pluginGroup>
+        <pluginGroup>org.openrewrite.maven</pluginGroup>
+        <pluginGroup>io.spring.javaformat</pluginGroup>
+    </pluginGroups>
+    <profiles>
+        <profile>
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>sp-releases-v2</id>
+                    <name>releases</name>
+                    <url>${env.MAVEN_REPO_RELEASES_URL}</url>
+                </repository>
+                <repository>
+                    <snapshots />
+                    <id>sp-snapshots-v2</id>
+                    <name>snapshots</name>
+                    <url>${env.MAVEN_REPO_SNAPSHOTS_URL}</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>sp-releases-v2</id>
+                    <name>public</name>
+                    <url>${env.MAVEN_REPO_RELEASES_URL}</url>
+                </pluginRepository>
+                <pluginRepository>
+                    <snapshots />
+                    <id>sp-snapshots-v2</id>
+                    <name>public</name>
+                    <url>${env.MAVEN_REPO_SNAPSHOTS_URL}</url>
+                </pluginRepository>
+            </pluginRepositories>
+            <id>sp</id>
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>sp</activeProfile>
+    </activeProfiles>
+</settings>
