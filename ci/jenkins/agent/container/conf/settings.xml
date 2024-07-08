@@ -21,7 +21,7 @@
     </server>
     <!-- docker -->
     <server>
-      <id>${env.DOCKER_REPO_URL}</id>
+      <id>${env.DOCKER_REGISTRY_URL}</id>
       <username>${env.DOCKER_USERNAME}</username>
       <password>${env.DOCKER_PASSWORD}</password>
     </server>
