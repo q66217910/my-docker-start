@@ -1,0 +1,82 @@
+version: "3.9"
+
+secrets:
+  # Secrets 配置是单行文本文件，其中唯一的内容就是密码
+  # 本例中的路径假定数据库密码保存在名为"./app"的本地文件夹中
+  DB_ROOT_PWD:
+    file: ./conf/db_root_pwd.txt
+  MYSQL_PWD:
+    file: ./conf/mysql_pwd.txt
+
+services:
+  nginx-app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-app
+    restart: unless-stopped
+    ports:
+      # HTTP 端口（左边为对外暴露的端口）:
+      - '80:80'
+      # HTTPS 端口（左边为对外暴露的端口）：
+      - '443:443'
+      # 后台管理端口（左边为对外暴露的端口）:
+      - '81:81'
+    environment:
+      ### 以下是访问数据库的设置
+      # 数据库主机，同下面配置的 nginx-db（docker 中同一 networks 配置下直接用别名）
+      DB_MYSQL_HOST: "nginx-db"
+      # 数据库端口
+      DB_MYSQL_PORT: 3306
+      # 数据库用户
+      DB_MYSQL_USER: "pandoranext"
+      # DB_MYSQL_PASSWORD: "pandoranext"  # 如果没有配置 MYSQL_PWD，则在配置文件中直接填密码，不是很安全
+      DB_MYSQL_PASSWORD__FILE: /run/secrets/MYSQL_PWD
+      DB_MYSQL_NAME: "pandoranext"
+      # 如果您更愿意使用 Sqlite，请取消注释下面这行，并删除上面所有 DB_MYSQL_* 行
+      # DB_SQLITE_FILE: "/data/database.sqlite"
+
+      ### 其他设置
+      # 如果主机未启用 IPv6，请取消此处的注释
+      # DISABLE_IPV6: 'true'
+      # 时区设置
+      TZ: "Asia/Shanghai"
+    volumes:
+      # 同步主机时间
+      # - /etc/localtime:/etc/localtime:ro
+      # npm 的数据存储位置
+      - ./data/vols/data:/data
+      # letsencrypt 证书位置
+      - ./data/vols/cert:/etc/letsencrypt
+    secrets:
+      # 如果使用密码文件，则需要在这里配置变量
+      - MYSQL_PWD
+    depends_on:
+      # 配置启动顺序，在 nginx-db 之后启动
+      - nginx-db
+    networks:
+      - pandora-next
+
+  nginx-db:
+    image: jc21/mariadb-aria
+    container_name: nginx-db
+    restart: unless-stopped
+    environment:
+      # MYSQL_ROOT_PASSWORD: "npm"  # use secret instead
+      MYSQL_ROOT_PASSWORD__FILE: /run/secrets/DB_ROOT_PWD
+      MYSQL_DATABASE: "npm"
+      MYSQL_USER: "npm"
+      # MYSQL_PASSWORD: "npm"  # use secret instead
+      MYSQL_PASSWORD__FILE: /run/secrets/MYSQL_PWD
+      TZ: "Asia/Shanghai"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    secrets:
+      - DB_ROOT_PWD
+      - MYSQL_PWD
+    networks:
+      - pandora-next
+
+networks:
+  pandora-next:
+    # 网络名称
+    name: pandora-next
+    driver: bridge
