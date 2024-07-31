@@ -1,0 +1,16 @@
+# 服务器的公网ip
+serverAddr = "120.76.98.51"
+# 7000端口 与frps.toml一致
+serverPort = 7000
+
+[[proxies]]
+# 自定义名称
+name = "web"
+# type这里写http
+type = "http"
+# 本地端口，例如本地启动的服务需要使用8000端口访问，这里就写8000
+localPort = 8000
+# 服务器的监听端口，与frps.toml一致
+remotePort = 86
+# 域名或服务器的公网ip，我做了反向代理，这里写的公网ip
+customDomains = ["120.76.98.51"]
