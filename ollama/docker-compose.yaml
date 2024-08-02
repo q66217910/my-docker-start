@@ -8,3 +8,4 @@ services:
       - '11434:11434'
     volumes:
       - ./data:/root/.ollama
+    restart: always
