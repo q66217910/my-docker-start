@@ -4,7 +4,7 @@ services:
     image: pengzhile/pandora-next
     container_name: PandoraNext
     network_mode: bridge
-    restart: always
+    
     ports:
       - "8181:8181"
     volumes:

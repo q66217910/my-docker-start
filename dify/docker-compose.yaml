@@ -180,7 +180,7 @@ services:
   # API service
   api:
     image: langgenius/dify-api:0.6.15
-    restart: always
+    
     environment:
       # Use the shared environment variables.
       <<: *shared-api-worker-env
@@ -200,7 +200,7 @@ services:
   # The Celery worker for processing the queue.
   worker:
     image: langgenius/dify-api:0.6.15
-    restart: always
+    
     environment:
       # Use the shared environment variables.
       <<: *shared-api-worker-env
@@ -219,7 +219,7 @@ services:
   # Frontend web application.
   web:
     image: langgenius/dify-web:0.6.15
-    restart: always
+    
     environment:
       CONSOLE_API_URL: ${CONSOLE_API_URL:-}
       APP_API_URL: ${APP_API_URL:-}
@@ -228,7 +228,7 @@ services:
   # The postgres database.
   db:
     image: postgres:15-alpine
-    restart: always
+    
     environment:
       PGUSER: ${PGUSER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-difyai123456}
@@ -245,7 +245,7 @@ services:
   # The redis cache.
   redis:
     image: redis:6-alpine
-    restart: always
+    
     volumes:
       # Mount the redis data directory to the container.
       - ./volumes/redis/data:/data
@@ -257,7 +257,7 @@ services:
   # The DifySandbox
   sandbox:
     image: langgenius/dify-sandbox:0.2.1
-    restart: always
+    
     environment:
       # The DifySandbox configurations
       # Make sure you are changing this key for your deployment with a strong key.
@@ -279,7 +279,7 @@ services:
   # https://docs.dify.ai/getting-started/install-self-hosted/install-faq#id-16.-why-is-ssrf_proxy-needed
   ssrf_proxy:
     image: ubuntu/squid:latest
-    restart: always
+    
     volumes:
       - ./ssrf_proxy/squid.conf.template:/etc/squid/squid.conf.template
       - ./ssrf_proxy/docker-entrypoint.sh:/docker-entrypoint-mount.sh
@@ -299,7 +299,7 @@ services:
   # used for reverse proxying the API service and Web service.
   nginx:
     image: nginx:latest
-    restart: always
+    
     volumes:
       - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
       - ./nginx/proxy.conf.template:/etc/nginx/proxy.conf.template
@@ -336,7 +336,7 @@ services:
     profiles:
       - ''
       - weaviate
-    restart: always
+    
     volumes:
       # Mount the Weaviate data directory to the con tainer.
       - ./volumes/weaviate:/var/lib/weaviate
@@ -360,7 +360,7 @@ services:
     image: langgenius/qdrant:v1.7.3
     profiles:
       - qdrant
-    restart: always
+    
     volumes:
       - ./volumes/qdrant:/qdrant/storage
     environment:
@@ -371,7 +371,7 @@ services:
     image: pgvector/pgvector:pg16
     profiles:
       - pgvector
-    restart: always
+    
     environment:
       PGUSER: ${PGVECTOR_PGUSER:-postgres}
       # The password for the default postgres user.
@@ -393,7 +393,7 @@ services:
     image: tensorchord/pgvecto-rs:pg16-v0.2.0
     profiles:
       - pgvecto-rs
-    restart: always
+    
     environment:
       PGUSER: ${PGVECTOR_PGUSER:-postgres}
       # The password for the default postgres user.
@@ -415,7 +415,7 @@ services:
     image: ghcr.io/chroma-core/chroma:0.5.1
     profiles:
       - chroma
-    restart: always
+    
     volumes:
       - ./volumes/chroma:/chroma/chroma
     environment:
@@ -428,7 +428,7 @@ services:
     image: container-registry.oracle.com/database/free:latest
     profiles:
       - oracle
-    restart: always
+    
     volumes:
       - type: volume
         source: oradata
@@ -546,7 +546,7 @@ services:
     image: myscale/myscaledb:1.6
     profiles:
       - myscale
-    restart: always
+    
     tty: true
     volumes:
       - ./volumes/myscale/data:/var/lib/clickhouse

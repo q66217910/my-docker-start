@@ -3,7 +3,7 @@ version: "3.5"
 services:
   sonarqube:
     image: sonarqube:enterprise-break
-    restart: always
+    
     depends_on:
       - db
     environment:
@@ -23,7 +23,7 @@ services:
           - sonarqube
   db:
     image: postgres:12
-    restart: always
+    
     environment:
       POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar@2018

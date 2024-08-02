@@ -18,7 +18,7 @@ services:
   db:
     image: docker.repo.swifer.co/bitnami/mysql:8.3
     container_name: apollo-db
-    restart: always
+    
     environment:
       ALLOW_EMPTY_PASSWORD: yes
     healthcheck:

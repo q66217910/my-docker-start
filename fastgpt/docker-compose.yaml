@@ -3,7 +3,7 @@ services:
   pg:
     image: ankane/pgvector:v0.5.0 # git
     container_name: pg
-    restart: always
+    
     ports:
       - "5432:5432"
     networks:
@@ -17,7 +17,7 @@ services:
   mongo:
     image: mongo:5.0.18
     container_name: mongo
-    restart: always
+    
     ports: # 生产环境建议不要暴露
       - "27017:27017"
     networks:
@@ -37,7 +37,7 @@ services:
     depends_on:
       - mongo
       - pg
-    restart: always
+    
     environment:
       # root 密码，用户名为: root
       - DEFAULT_ROOT_PSW=1234
