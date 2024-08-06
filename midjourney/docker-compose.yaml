@@ -5,8 +5,8 @@ services:
     image: licoy/chatgpt-midjourney:v3.3.1
     container_name: midjourney
     environment:
-      OPENAI_API_KEY: "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-      BASE_URL: "https://api.openai.com"
+      OPENAI_API_KEY: "ollama"
+      BASE_URL: "https://ollama:11434"
       MJ_PROXY_URL: "https://ai.trueai.org/mj"
       MJ_PROXY_TOKEN: ""
     networks:
