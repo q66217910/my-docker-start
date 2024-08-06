@@ -5,7 +5,7 @@ services:
     image: docker.io/bitnami/nginx:1.25
     container_name: nginx
     ports:
-      - '80:80'
+      - '80:8080'
     volumes:
       - type: bind
         source: ./conf/server_blocks
