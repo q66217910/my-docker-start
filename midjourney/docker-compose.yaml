@@ -13,4 +13,4 @@ services:
       - docker
 networks:
   docker:
-    driver: bridge
+    external: true
