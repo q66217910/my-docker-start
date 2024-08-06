@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: wallyt-cms-service
-  namespace: argocd
+  name: wallyt-cms-service-a
+  namespace: project-a
 spec:
-  project: default
+  project: project-a
   sources:
     - chart: sp-svr
       repoURL:  https://repo.swifer.co/artifactory/charts
@@ -28,4 +28,4 @@ spec:
 #        name: my-plugin-v1.0
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: standard
+    namespace: project-b

@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: flux1:latest
+    stop_grace_period: 0s
+    ipc: host
+    tty: true
+    volumes:
+      - ./data:/app
+      - ./cache:/root/.cache
+    command: python train_rinna.py

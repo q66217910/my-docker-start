@@ -77,3 +77,4 @@ application.pid
 **/data
 **/logs
 **/volumes
+**/cache
