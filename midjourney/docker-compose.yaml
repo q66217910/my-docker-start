@@ -7,6 +7,7 @@ services:
     environment:
       OPENAI_API_KEY: "ollama"
       BASE_URL: "http://ollama:11434"
+      CUSTOM_MODELS: "qwen2:0.5b"
       MJ_PROXY_URL: "https://ai.trueai.org/mj"
       MJ_PROXY_TOKEN: ""
     networks:
