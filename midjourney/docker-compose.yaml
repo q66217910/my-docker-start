@@ -6,7 +6,7 @@ services:
     container_name: midjourney
     environment:
       OPENAI_API_KEY: "ollama"
-      BASE_URL: "https://ollama:11434/v1"
+      BASE_URL: "http://ollama:11434/v1"
       MJ_PROXY_URL: "https://ai.trueai.org/mj"
       MJ_PROXY_TOKEN: ""
     networks:
