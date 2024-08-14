@@ -2,8 +2,7 @@ version: "3.5"
 
 services:
   sonarqube:
-    image: sonarqube:enterprise-break
-    
+    build: ./container
     depends_on:
       - db
     environment:
@@ -28,8 +27,8 @@ services:
       POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar@2018
     volumes:
-      - .data/sonarqube/pg:/var/lib/postgresql
-      - .data/sonarqube/pg_data:/var/lib/postgresql/data
+      - ./data/sonarqube/pg:/var/lib/postgresql
+      - ./data/sonarqube/pg_data:/var/lib/postgresql/data
     networks:
       sonarqube:
         aliases:
