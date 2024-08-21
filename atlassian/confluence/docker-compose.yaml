@@ -9,6 +9,8 @@ networks:
 services:
   confluence-server:
     image: docker.repo.swifer.co/atlassian/confluence-server:8.8.0-sp
+    container_name: confluence-server
+    build: ./container
     ports:
       - '8090:8090'
     volumes:

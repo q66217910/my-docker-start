@@ -1,4 +1,4 @@
-FROM docker.repo.swifer.co/atlassian/confluence-server:8.8.0
+FROM atlassian/confluence-server:8.8.0-jdk17
 
 RUN curl -LfsSo /var/atlassian/atlassian-agent.jar https://repo.swifer.co:443/artifactory/download/confluence/atlassian-agent.jar
 
