@@ -1,0 +1,68 @@
+version: '3.3'
+
+services:
+  mysql:
+    image: docker.repo.swifer.co/bitnami/mysql:8.4
+    container_name: mysql
+    volumes:
+      - 'mysql_data:/bitnami/mysql/data'
+    environment:
+      - MYSQL_ROOT_USER=wft_admin
+      - MYSQL_ROOT_PASSWORD=swiftpass@2024
+      - MYSQL_USER=wftapp
+      - MYSQL_PASSWORD=swiftpass@2024
+      - MYSQL_DATABASE=apifox
+    healthcheck:
+      test: [ 'CMD', '/opt/bitnami/scripts/mysql/healthcheck.sh' ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+  redis:
+    image: docker.repo.swifer.co/bitnami/redis:7.4
+    container_name: redis
+    environment:
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+      - REDIS_PASSWORD=swiftpass@2024
+    volumes:
+      - 'redis_data:/bitnami/redis/data'
+  apifox:
+    image: docker.repo.swifer.co/sp_library/apifox-ee:latest
+    container_name: apifox
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "80:80"
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=apifox
+      - MYSQL_USER_NAME=wftapp
+      - MYSQL_PASSWORD=swiftpass@2024
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=swiftpass@2024
+      - REDIS_DB=0
+      - JWT_SECRET=swiftpass@2024
+      - BASE_URL=https://apifox.swifer.co
+      - MAILER_HOST=smtp.exmail.qq.com
+      - MAILER_PORT=465
+      - MAILER_SECURE=true
+      - MAILER_USER=1000@swiftpass.cn
+      - MAILER_PASSWORD=Optsystem@2019
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=swiftpass@2024
+      - LICENSE=MuJ/vmx88krzeBnzXc9BX4W+gQS/Oysk5s1lkL+T84MwrB5CeCIup/QJPqCQPkdMZWfMIDxCJnLVL5Y522+SuES4LMSIGNeU1MIiovpGiuBmYkfta/Ea0V+59umIucBlS1m/wgF5LrkQgLIASmmFcxzqhppeZiOzIS+zNr2i6HsGDaotXLpsbju6voDVTcnthyHKLMIhZD4weQ58f9haOqTFtTqXYVvDGCKJq9w+pjGQpxbBwgCgL0Jyb/YcRdWWfZSrolrl2Q9qgqsb/JLJo9ecvAo7fdE1NCoI4sz2swO7KYVOBahd5u1nYZEyhjQQLLoQ6/ixwTl2g4CUNp9GUQ==||U2FsdGVkX18Lsm8DS8signSD/Hlc0K9CN39+7ko6tiNrU9Bow+hwaCvr/Wnetce2DAG607xAUgZxbfMDL3si+U//PQtZQnbrDX8k9SMbQZK7GaS5p/ILD28BuiFEtB8HX6KiE8iT0MQg4rSWDm+HHEjPiIi9ANuuCtRY/s3edskKflw908mRtlNBuiu/4YJt+O63cZCb9o+PFs5a+ySfihLAVDBu6PazBf8aUtzIZEQ=**TPmw5Pf24iOkoNwwYzVgVzSx28+Z+9fj3HgdvZKud3kS0QPyUoWqSCVEu0lkB6aKgv64iqlz9/bh5vGhQfnDKC93a+Bh+njBaHeCfBkXWQ9uW618pXQUceaJHgOAd9zKu/TSpLqUgXPBlHfG62nHsKOjo7YI9IndYvZn+oW9M1fHNMpqGUjrb1Ub0lC/wfXNU2RcK8PoFMhT6aIp/al05voe1EdJMiQGGjSxP73pjcLTulXA5DObWOBHbVbeZavp1iBplOdnfM/lr67pBJJeLpFoDWXVVHGdmaT57TuYXypTzvX9hXfsDwEJvKV6DaJBurRrw+iDQzC/jtGkodO8WQ==
+    volumes:
+      - ./data/apifox/logs:/usr/src/app/logs
+      - ./data/apifox/static-upload:/usr/src/app/app/public/static-upload
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.3.0/24
