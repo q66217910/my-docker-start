@@ -6,7 +6,7 @@ services:
     container_name: mt-photos
     restart: always
     ports:
-      - 8063:8063
+      - "8063:8063"
     volumes:
       - /data/docker/mt_photos/config:/config
       - /data/mt_photos:/upload
