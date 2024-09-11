@@ -1,0 +1,20 @@
+{
+  "bind": "0.0.0.0:8181",
+  "proxy_url": "",
+  "timeout": 600,
+  "codex_api_base": "https://api.deepseek.com/beta/v1",
+  "codex_api_key": "sk-xSK9K2BrrUltg5S65bA5Da760f0244Bf8819292e80B939D1",
+  "codex_api_organization": "",
+  "codex_api_project": "",
+  "codex_max_tokens": 500,
+  "code_instruct_model": "deepseek-coder",
+  "chat_api_base": "https://api.deepseek.com/beta/v1",
+  "chat_api_key": "sk-xSK9K2BrrUltg5S65bA5Da760f0244Bf8819292e80B939D1",
+  "chat_api_organization": "",
+  "chat_api_project": "",
+  "chat_max_tokens": 4096,
+  "chat_model_default": "deepseek-coder",
+  "chat_model_map": {},
+  "chat_locale": "zh_CN",
+  "auth_token": ""
+}
