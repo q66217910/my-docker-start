@@ -1,0 +1,7 @@
+services:
+  dify-agent:
+    container_name: dify-agent
+    image: registry.cn-shenzhen.aliyuncs.com/koala888/dify-agent:1.0.0-SNAPSHOT
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
