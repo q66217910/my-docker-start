@@ -10,3 +10,8 @@ services:
       - ./config.json:/app/config.json
     ports:
       - "8181:8181"
+    networks:
+      - docker
+networks:
+  docker:
+    external: true

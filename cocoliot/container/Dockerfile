@@ -20,4 +20,3 @@ VOLUME /app
 
 EXPOSE 8181
 CMD ["override"]
-
