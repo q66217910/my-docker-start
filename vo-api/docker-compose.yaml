@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  voapi:
+    image: licoy/voapi:latest
+    container_name: voapi
+    restart: always
+    command: --log-dir /app/logs
+    ports:
+      - "8084:3000"
+    volumes:
+      - ./data:/data
+      - ./logs:/app/logs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+#      - SQL_DSN=root:123456@tcp(host.docker.internal:3306)/voapi?charset=utf8mb4&parseTime=True&loc=Local  # 修改此行，或注释掉以使用 SQLite 作为数据库
+      - REDIS_CONN_STRING=redis://redis
+      - SESSION_SECRET=dsadsadsadsadasdasdsadsad  # 启动前必须手动修改此值为随机字符串
+      - TZ=Asia/Shanghai
+
+    depends_on:
+      - redis
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q -O - http://localhost:3000/api/status | grep -o '\"success\":\\s*true' | awk -F: '{print $2}'" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
