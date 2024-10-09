@@ -7,6 +7,8 @@ services:
       - MYSQL_ROOT_PASSWORD=12345678
       - MYSQL_DATABASE=Xanadu
     restart: always
+    ports:
+      - "8083:3306"
     # 初始命令
     command:
       --character-set-server=utf8mb4
