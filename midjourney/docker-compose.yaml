@@ -2,7 +2,8 @@ version: "3"
 
 services:
   midjourney:
-    image: licoy/chatgpt-midjourney:latest
+#    image: licoy/chatgpt-midjourney:latest
+    image: registry.cn-shanghai.aliyuncs.com/koala888/chatgpt-midjourney:latest
     container_name: midjourney
     environment:
       OPENAI_API_KEY: "sk-xSK9K2BrrUltg5S65bA5Da760f0244Bf8819292e80B939D1"
