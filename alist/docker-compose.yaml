@@ -10,6 +10,8 @@ services:
       - PGID=0
       - UMASK=022
     restart: unless-stopped
+    ports:
+      - "5244:5244"
     networks:
       - docker
 networks:
