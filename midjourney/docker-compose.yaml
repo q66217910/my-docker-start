@@ -11,6 +11,8 @@ services:
       CUSTOM_MODELS: "gpt-4o-mini"
       MJ_PROXY_URL: "https://ai.trueai.org/mj"
       MJ_PROXY_TOKEN: ""
+    ports:
+      - "3000:3000"
     networks:
       - docker
 networks:
