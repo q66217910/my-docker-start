@@ -1,0 +1,55 @@
+services:
+  nginx:
+    image: docker.io/bitnami/nginx:1.25
+    container_name: nginx
+    ports:
+      - '80:8080'
+    volumes:
+      - type: bind
+        source: ./conf/server_blocks
+        target: /opt/bitnami/nginx/conf/server_blocks
+    networks:
+      - docker
+  db:
+    image: mysql:5.7
+    container_name: xanadu-db
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=12345678
+      - MYSQL_DATABASE=Xanadu
+    restart: always
+    # 初始命令
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    # 数据挂载
+    volumes:
+      - ./data/mysql/data:/var/lib/mysql
+      - ./server/init:/docker-entrypoint-initdb.d/
+    networks:
+      - docker
+
+  backend:
+    container_name: xanadu-server
+    image: registry.cn-shanghai.aliyuncs.com/koala888/xanadu-server:latest
+    build:
+      context: ./server
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - docker
+
+  frontend:
+    container_name: xanadu-frontend
+    image: registry.cn-shanghai.aliyuncs.com/koala888/xanadu-frontend:latest
+    build:
+      context: .
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - docker
+networks:
+  docker:
+    external: true
