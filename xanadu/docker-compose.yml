@@ -23,6 +23,8 @@ services:
     image: registry.cn-shanghai.aliyuncs.com/koala888/xanadu-server:latest
     build:
       context: ./server
+    ports:
+      - "8082:3000"
     depends_on:
       - db
     restart: always
@@ -32,6 +34,8 @@ services:
   frontend:
     container_name: xanadu-frontend
     image: registry.cn-shanghai.aliyuncs.com/koala888/xanadu-frontend:latest
+    ports:
+      - "8081:80"
     build:
       context: .
     depends_on:
