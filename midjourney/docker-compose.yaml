@@ -2,12 +2,12 @@ version: "3"
 
 services:
   midjourney:
-    image: licoy/chatgpt-midjourney:v3.3.1
+    image: licoy/chatgpt-midjourney:latest
     container_name: midjourney
     environment:
-      OPENAI_API_KEY: "ollama"
-      BASE_URL: "http://ollama:11434"
-      CUSTOM_MODELS: "qwen2:0.5b"
+      OPENAI_API_KEY: "sk-xSK9K2BrrUltg5S65bA5Da760f0244Bf8819292e80B939D1"
+      BASE_URL: "https://api.oaipro.com"
+      CUSTOM_MODELS: "gpt-4o-mini"
       MJ_PROXY_URL: "https://ai.trueai.org/mj"
       MJ_PROXY_TOKEN: ""
     networks:
