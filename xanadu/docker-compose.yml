@@ -1,6 +1,6 @@
 services:
   db:
-    image: bitnami/mysql:8.4
+    image: registry.cn-shanghai.aliyuncs.com/koala888/mysql:8.4
     container_name: xanadu-db
     environment:
       - TZ=Asia/Shanghai
@@ -22,6 +22,7 @@ services:
       retries: 6
     networks:
       - docker
+
   backend:
     container_name: xanadu-server
     image: registry.cn-shanghai.aliyuncs.com/koala888/xanadu-server:latest
