@@ -1,7 +1,8 @@
 version: '3.8'
 services:
   lobe-chat:
-    image: lobehub/lobe-chat:latest
+    #image: lobehub/lobe-chat:latest
+    image: registry.cn-shanghai.aliyuncs.com/koala888/lobe-chat:latest
     container_name: lobe-chat
     ports:
       - "3210:3210"
