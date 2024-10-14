@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  comfyui:
+  lobe-chat:
     image: lobehub/lobe-chat:latest
     container_name: lobe-chat
     ports:
