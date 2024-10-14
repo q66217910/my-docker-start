@@ -8,4 +8,4 @@ services:
     environment:
       - "OPENAI_PROXY_URL=https://api.oaipro.com/v1"
       - "OPENAI_API_KEY=sk-xSK9K2BrrUltg5S65bA5Da760f0244Bf8819292e80B939D1"
-      - "ACCESS_CODE=lobe66 "
+      - "ACCESS_CODE=lobe66"
