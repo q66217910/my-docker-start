@@ -1,0 +1,8 @@
+version: "3"
+services:
+  chuang-qi:
+    image: registry.cn-hangzhou.aliyuncs.com/guoshiyin/game:chuanqi
+    container_name: chuang-qi
+    command:
+      - bt
+      - start
