@@ -1,0 +1,12 @@
+authority:
+  users:
+    # 用于登录计算节点的用户名和授权主机的组合，格式：<username>@<hostname>，hostname 为 % 或空字符串表示不限制授权主机，username 和 hostname 大小写不敏感
+    - user: wftapp
+      password: wft2022
+      admin: true
+  privilege:
+    type: ALL_PERMITTED
+
+props:
+  system-log-level: DEBUG
+  sql-show: true
