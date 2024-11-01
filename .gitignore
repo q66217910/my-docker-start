@@ -78,3 +78,4 @@ application.pid
 **/logs
 **/volumes
 **/cache
+**/log
