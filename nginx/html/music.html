@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音乐搜索</title>
+    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue/3.2.31/vue.global.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://ipgeo-bingpic.hf.space');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            overflow: auto;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            flex: 1;
+            width: 100%;
+            min-height: calc(100vh - 50px);
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px black;
+            margin-bottom: 20px;
+        }
+        #footer {
+            width: 100%;
+            text-align: center;
+            font-size: 0.9em;
+            color: #ccc;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            position: fixed;
+            bottom: 0;
+        }
+        #footer a {
+            color: #ccc;
+            text-decoration: none;
+        }
+        #footer a:hover {
+            color: #e0e0e0;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <h1>音乐搜索</h1>
+            <div class="relative py-3 sm:max-w-xl sm:mx-auto w-full px-4">
+                <div class="relative flex items-center space-x-4">
+                    <input v-model="searchQuery" @keyup.enter="searchMusic" type="text" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="输入歌曲名称搜索...">
+                    <button @click="searchMusic" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">搜索</button>
+                </div>
+                <div v-if="searchHistory.length && !isSearching && !musicList.length" class="mt-4">
+                    <h3 class="text-sm text-white mb-2">搜索历史</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span v-for="(item, index) in searchHistory" :key="index" @click="searchWithHistory(item)" class="px-3 py-1 bg-gray-200 rounded-full text-sm cursor-pointer hover:bg-gray-300">{{ item }}</span>
+                    </div>
+                </div>
+                <div v-if="isSearching" class="mt-8 text-center">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+                    <p class="mt-2 text-white">搜索中...</p>
+                </div>
+                <div v-if="!isSearching && musicList.length" class="mt-8">
+                    <div v-for="(item, index) in musicList" :key="index" class="bg-white rounded-lg shadow-md p-4 mb-4">
+                        <div class="flex items-center space-x-4">
+                            <img :src="item.cover" alt="album cover" class="w-20 h-20 rounded-lg">
+                            <div class="flex-1">
+                                <h2 class="text-xl font-semibold">{{ item.song }}</h2>
+                                <p class="text-gray-600">{{ item.singer }}</p>
+                                <p class="text-sm text-gray-500" v-if="item.album">专辑: {{ item.album }}</p>
+                                <p class="text-sm text-gray-500" v-if="item.subtitle">{{ item.subtitle }}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center space-x-4">
+                            <button @click="playMusic(item.id)" class="px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" :disabled="isLoadingMusic">
+                                <i :class="['fas', currentPlayingId === item.id && isPlaying ? 'fa-pause' : 'fa-play']"></i>
+                                {{ currentPlayingId === item.id && isPlaying ? '暂停' : '播放' }}
+                            </button>
+                            <div v-if="currentPlayingId === item.id" class="flex-1 h-2 bg-gray-200 rounded-full">
+                                <div :style="{ width: playProgress + '%' }" class="h-full bg-blue-500 rounded-full"></div>
+                            </div>
+                            <button @click="downloadMusic(item.id)" class="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600" :disabled="isLoadingMusic">下载</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer">
+        <span>Copyright © <span id="year"></span> <a href="/">音乐搜索</a></span> | 
+        <span><a href="https://linux.do/u/f-droid" target="_blank" rel="nofollow">Powered by F-droid</a></span>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted, onUnmounted } = Vue
+        createApp({
+            setup() {
+                const searchQuery = ref('')
+                const isSearching = ref(false)
+                const isLoadingMusic = ref(false)
+                const musicList = ref([])
+                const searchHistory = ref([])
+                const audioPlayer = ref(null)
+                const isPlaying = ref(false)
+                const playProgress = ref(0)
+                const currentPlayingId = ref(null)
+
+                onMounted(() => {
+                    const history = localStorage.getItem('searchHistory')
+                    if (history) {
+                        searchHistory.value = JSON.parse(history)
+                    }
+                })
+
+                const searchMusic = async () => {
+                    if (!searchQuery.value.trim()) return // 防止搜索空字符串
+
+                    isSearching.value = true // 开始搜索
+                    musicList.value = [] // 清空现有的音乐列表
+                    try {
+                        const response = await fetch(`https://api.lolimi.cn/API/qqdg/?word=${encodeURIComponent(searchQuery.value)}`)
+                        const data = await response.json()
+                        musicList.value = data.data || []
+
+                        if (!searchHistory.value.includes(searchQuery.value)) {
+                            searchHistory.value.unshift(searchQuery.value)
+                            if (searchHistory.value.length > 5) {
+                                searchHistory.value.pop()
+                            }
+                            localStorage.setItem('searchHistory', JSON.stringify(searchHistory.value))
+                        }
+                    } catch (error) {
+                        console.error('搜索失败:', error)
+                    } finally {
+                        isSearching.value = false // 搜索结束
+                    }
+                }
+
+                const playMusic = async (id) => {
+                    if (isLoadingMusic.value) return
+
+                    if (currentPlayingId.value === id && audioPlayer.value) {
+                        togglePlay()
+                        return
+                    }
+
+                    isLoadingMusic.value = true
+                    try {
+                        const response = await fetch(`https://api.lolimi.cn/API/qqdg/?id=${id}`)
+                        const data = await response.json()
+
+                        if (data.data.url) {
+                            if (audioPlayer.value) {
+                                audioPlayer.value.pause()
+                            }
+                            audioPlayer.value = new Audio(data.data.url)
+                            audioPlayer.value.addEventListener('timeupdate', updateProgress)
+                            audioPlayer.value.addEventListener('ended', () => {
+                                isPlaying.value = false
+                                playProgress.value = 0
+                            })
+                            audioPlayer.value.play()
+                            isPlaying.value = true
+                            currentPlayingId.value = id
+                        } else {
+                            alert('无法播放该音乐，可能需要付费或暂不可用。')
+                        }
+                    } catch (error) {
+                        console.error('播放失败:', error)
+                        alert('播放失败，请稍后重试。')
+                    } finally {
+                        isLoadingMusic.value = false
+                    }
+                }
+
+                const togglePlay = () => {
+                    if (!audioPlayer.value) return
+
+                    if (isPlaying.value) {
+                        audioPlayer.value.pause()
+                    } else {
+                        audioPlayer.value.play()
+                    }
+                    isPlaying.value = !isPlaying.value
+                }
+
+                const updateProgress = () => {
+                    if (!audioPlayer.value) return
+                    playProgress.value = (audioPlayer.value.currentTime / audioPlayer.value.duration) * 100
+                }
+
+                const downloadMusic = async (id) => {
+                    if (isLoadingMusic.value) return
+
+                    isLoadingMusic.value = true
+                    try {
+                        const response = await fetch(`https://api.lolimi.cn/API/qqdg/?id=${id}`)
+                        const data = await response.json()
+
+                        if (data.data.url) {
+                            const link = document.createElement('a')
+                            link.href = data.data.url
+                            link.download = `${data.data.song}.mp3`
+                            document.body.appendChild(link)
+                            link.click()
+                            document.body.removeChild(link)
+                        } else {
+                            alert('无法下载该音乐，可能需要付费或暂不可用。')
+                        }
+                    } catch (error) {
+                        console.error('下载失败:', error)
+                        alert('下载失败，请稍后重试。')
+                    } finally {
+                        isLoadingMusic.value = false
+                    }
+                }
+
+                const searchWithHistory = (query) => {
+                    searchQuery.value = query
+                    searchMusic()
+                }
+
+                onUnmounted(() => {
+                    if (audioPlayer.value) {
+                        audioPlayer.value.removeEventListener('timeupdate', updateProgress)
+                        audioPlayer.value.pause()
+                    }
+                })
+
+                return {
+                    searchQuery,
+                    isSearching,
+                    isLoadingMusic,
+                    musicList,
+                    searchHistory,
+                    isPlaying,
+                    playProgress,
+                    currentPlayingId,
+                    searchMusic,
+                    playMusic,
+                    downloadMusic,
+                    searchWithHistory
+                }
+            }
+        }).mount('#app')
+
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

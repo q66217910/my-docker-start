@@ -10,6 +10,9 @@ services:
       - type: bind
         source: ./conf/server_blocks
         target: /opt/bitnami/nginx/conf/server_blocks
+      - type: bind
+        source: ./html
+        target: /app/html
     networks:
       - docker
 networks:
