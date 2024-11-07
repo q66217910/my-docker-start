@@ -1,268 +1,589 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>音乐搜索</title>
-    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue/3.2.31/vue.global.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>音乐搜索与播放</title>
     <style>
         body {
-            background-image: url('https://ipgeo-bingpic.hf.space');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            overflow: auto;
-            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
-        }
-        .container {
+            padding: 0 10px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
-            flex: 1;
-            width: 100%;
-            min-height: calc(100vh - 50px);
             box-sizing: border-box;
         }
-        h1 {
-            font-size: 2.5em;
-            color: white;
-            text-align: center;
-            text-shadow: 2px 2px 4px black;
-            margin-bottom: 20px;
-        }
-        #footer {
+
+        .container {
             width: 100%;
-            text-align: center;
-            font-size: 0.9em;
-            color: #ccc;
+            box-sizing: border-box;
+            padding-bottom: 120px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            z-index: 1;
+            background-color: #f4f4f4;
+            height: 80px;
+            width: 100%;
+            top: 0;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input,
+        .search-bar select {
             padding: 10px;
-            background: rgba(0, 0, 0, 0.6);
+            margin-right: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-bar button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .settings {
+            position: relative;
+        }
+
+        .settings button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .settings button:hover {
+            background-color: #5a6268;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal-content button.primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .modal-content button.secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .song-list {
+            display: grid;
+            justify-content: center;
+            grid-template-columns: repeat(auto-fill, 430px);
+            grid-gap: 10px;
+        }
+
+        .song-item {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            width: 400px;
+
+        }
+
+        .song-item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .song-item .info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .song-item .actions {
+            display: flex;
+            gap: 18px;
+            flex-direction: column;
+        }
+
+        .song-item button {
+            padding: 5px;
+            background-color: #5a6268;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .song-item .actions button:first-of-type {
+            background-color: #007bff;
+        }
+
+        .song-item .actions button:last-of-type {
+            background-color: #28a745;
+        }
+
+        .player {
             position: fixed;
             bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border-top: 1px solid #ccc;
+            padding: 10px 20px 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            box-sizing: border-box;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
         }
-        #footer a {
-            color: #ccc;
-            text-decoration: none;
+
+        .player audio {
+            width: 100%;
         }
-        #footer a:hover {
-            color: #e0e0e0;
-            text-decoration: underline;
+
+        .player .song-info {
+            flex: 1;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #333;
+            text-align: center;
+        }
+
+        @media (max-width: 900px) {
+            .song-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                justify-content: center;
+            }
+
+            .song-item {
+                width: 100%;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div id="app">
-        <div class="container">
-            <h1>音乐搜索</h1>
-            <div class="relative py-3 sm:max-w-xl sm:mx-auto w-full px-4">
-                <div class="relative flex items-center space-x-4">
-                    <input v-model="searchQuery" @keyup.enter="searchMusic" type="text" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="输入歌曲名称搜索...">
-                    <button @click="searchMusic" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">搜索</button>
-                </div>
-                <div v-if="searchHistory.length && !isSearching && !musicList.length" class="mt-4">
-                    <h3 class="text-sm text-white mb-2">搜索历史</h3>
-                    <div class="flex flex-wrap gap-2">
-                        <span v-for="(item, index) in searchHistory" :key="index" @click="searchWithHistory(item)" class="px-3 py-1 bg-gray-200 rounded-full text-sm cursor-pointer hover:bg-gray-300">{{ item }}</span>
-                    </div>
-                </div>
-                <div v-if="isSearching" class="mt-8 text-center">
-                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
-                    <p class="mt-2 text-white">搜索中...</p>
-                </div>
-                <div v-if="!isSearching && musicList.length" class="mt-8">
-                    <div v-for="(item, index) in musicList" :key="index" class="bg-white rounded-lg shadow-md p-4 mb-4">
-                        <div class="flex items-center space-x-4">
-                            <img :src="item.cover" alt="album cover" class="w-20 h-20 rounded-lg">
-                            <div class="flex-1">
-                                <h2 class="text-xl font-semibold">{{ item.song }}</h2>
-                                <p class="text-gray-600">{{ item.singer }}</p>
-                                <p class="text-sm text-gray-500" v-if="item.album">专辑: {{ item.album }}</p>
-                                <p class="text-sm text-gray-500" v-if="item.subtitle">{{ item.subtitle }}</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex items-center space-x-4">
-                            <button @click="playMusic(item.id)" class="px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" :disabled="isLoadingMusic">
-                                <i :class="['fas', currentPlayingId === item.id && isPlaying ? 'fa-pause' : 'fa-play']"></i>
-                                {{ currentPlayingId === item.id && isPlaying ? '暂停' : '播放' }}
-                            </button>
-                            <div v-if="currentPlayingId === item.id" class="flex-1 h-2 bg-gray-200 rounded-full">
-                                <div :style="{ width: playProgress + '%' }" class="h-full bg-blue-500 rounded-full"></div>
-                            </div>
-                            <button @click="downloadMusic(item.id)" class="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600" :disabled="isLoadingMusic">下载</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="header">
+    <div class="search-bar">
+        <select id="search-type">
+            <option value="keyword">关键词</option>
+            <option value="mid">MID</option>
+        </select>
+        <input type="text" id="search-input" placeholder="输入关键词或MID" onkeypress="handleKeyPress(event)">
+        <button onclick="searchSongs()">搜索</button>
+    </div>
+    <div class="settings">
+        <button onclick="openSettingsModal()">设置</button>
+    </div>
+</div>
+<div class="container">
+    <div class="song-list" id="song-list"></div>
+    <div class="player" id="player">
+        <div class="song-info" id="song-info">暂无播放内容</div>
+        <audio id="audio-player" controls></audio>
+    </div>
+</div>
+
+<div id="settings-modal" class="modal">
+    <div class="modal-content">
+        <h2>设置</h2>
+        <label>
+            在线播放默认音质:
+            <select id="default-play-quality">
+                <option value="14">母带 (q=14)</option>
+                <option value="11">无损 (q=11)</option>
+                <option value="8">高 (q=8)</option>
+                <option value="4" selected>标准 (q=4)</option>
+                <option value="2">低 (q=2)</option>
+            </select>
+        </label>
+        <label>
+            下载默认音质:
+            <select id="default-download-quality">
+                <option value="14">母带 (q=14)</option>
+                <option value="11">无损 (q=11)</option>
+                <option value="8">高 (q=8)</option>
+                <option value="4" selected>标准 (q=4)</option>
+                <option value="2">低 (q=2)</option>
+            </select>
+        </label>
+        <div>
+            <button class="primary" onclick="saveSettings()">确定</button>
+            <button class="secondary" onclick="closeSettingsModal()">取消</button>
         </div>
     </div>
+</div>
 
-    <div id="footer">
-        <span>Copyright © <span id="year"></span> <a href="/">音乐搜索</a></span> | 
-        <span><a href="https://linux.do/u/f-droid" target="_blank" rel="nofollow">Powered by F-droid</a></span>
+<div id="download-modal" class="modal">
+    <div class="modal-content">
+        <h2>选择下载音质</h2>
+        <label>
+            <input type="radio" name="download-quality" value="14">
+            母带 (q=14)
+        </label>
+        <label>
+            <input type="radio" name="download-quality" value="11">
+            无损 (q=11)
+        </label>
+        <label>
+            <input type="radio" name="download-quality" value="8">
+            高 (q=8)
+        </label>
+        <label>
+            <input type="radio" name="download-quality" value="4">
+            标准 (q=4)
+        </label>
+        <label>
+            <input type="radio" name="download-quality" value="2">
+            低 (q=2)
+        </label>
+        <label>
+            自定义音质级别:
+            <input type="number" id="custom-quality" min="1" max="14">
+        </label>
+        <div>
+            <button class="primary" onclick="downloadSelectedQuality()">下载</button>
+            <button class="secondary" onclick="closeDownloadModal()">取消</button>
+        </div>
     </div>
+</div>
 
-    <script>
-        const { createApp, ref, onMounted, onUnmounted } = Vue
-        createApp({
-            setup() {
-                const searchQuery = ref('')
-                const isSearching = ref(false)
-                const isLoadingMusic = ref(false)
-                const musicList = ref([])
-                const searchHistory = ref([])
-                const audioPlayer = ref(null)
-                const isPlaying = ref(false)
-                const playProgress = ref(0)
-                const currentPlayingId = ref(null)
+<script>
+    let currentSong = null;
+    let selectedQuality = null;
+    let selectedMID = null;
 
-                onMounted(() => {
-                    const history = localStorage.getItem('searchHistory')
-                    if (history) {
-                        searchHistory.value = JSON.parse(history)
-                    }
-                })
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            searchSongs();
+        }
+    }
 
-                const searchMusic = async () => {
-                    if (!searchQuery.value.trim()) return // 防止搜索空字符串
+    function openSettingsModal() {
+        document.getElementById('settings-modal').style.display = 'block';
+    }
 
-                    isSearching.value = true // 开始搜索
-                    musicList.value = [] // 清空现有的音乐列表
-                    try {
-                        const response = await fetch(`https://api.lolimi.cn/API/qqdg/?word=${encodeURIComponent(searchQuery.value)}`)
-                        const data = await response.json()
-                        musicList.value = data.data || []
+    function closeSettingsModal() {
+        document.getElementById('settings-modal').style.display = 'none';
+    }
 
-                        if (!searchHistory.value.includes(searchQuery.value)) {
-                            searchHistory.value.unshift(searchQuery.value)
-                            if (searchHistory.value.length > 5) {
-                                searchHistory.value.pop()
-                            }
-                            localStorage.setItem('searchHistory', JSON.stringify(searchHistory.value))
-                        }
-                    } catch (error) {
-                        console.error('搜索失败:', error)
-                    } finally {
-                        isSearching.value = false // 搜索结束
-                    }
-                }
+    function saveSettings() {
+        const defaultPlayQuality = document.getElementById('default-play-quality').value;
+        const defaultDownloadQuality = document.getElementById('default-download-quality').value;
 
-                const playMusic = async (id) => {
-                    if (isLoadingMusic.value) return
+        localStorage.setItem('defaultPlayQuality', defaultPlayQuality);
+        localStorage.setItem('defaultDownloadQuality', defaultDownloadQuality);
 
-                    if (currentPlayingId.value === id && audioPlayer.value) {
-                        togglePlay()
-                        return
-                    }
+        closeSettingsModal();
+    }
 
-                    isLoadingMusic.value = true
-                    try {
-                        const response = await fetch(`https://api.lolimi.cn/API/qqdg/?id=${id}`)
-                        const data = await response.json()
+    function loadSettings() {
+        const defaultPlayQuality = localStorage.getItem('defaultPlayQuality') || '4';
+        const defaultDownloadQuality = localStorage.getItem('defaultDownloadQuality') || '4';
 
-                        if (data.data.url) {
-                            if (audioPlayer.value) {
-                                audioPlayer.value.pause()
-                            }
-                            audioPlayer.value = new Audio(data.data.url)
-                            audioPlayer.value.addEventListener('timeupdate', updateProgress)
-                            audioPlayer.value.addEventListener('ended', () => {
-                                isPlaying.value = false
-                                playProgress.value = 0
-                            })
-                            audioPlayer.value.play()
-                            isPlaying.value = true
-                            currentPlayingId.value = id
-                        } else {
-                            alert('无法播放该音乐，可能需要付费或暂不可用。')
-                        }
-                    } catch (error) {
-                        console.error('播放失败:', error)
-                        alert('播放失败，请稍后重试。')
-                    } finally {
-                        isLoadingMusic.value = false
-                    }
-                }
+        document.getElementById('default-play-quality').value = defaultPlayQuality;
+        document.getElementById('default-download-quality').value = defaultDownloadQuality;
+    }
 
-                const togglePlay = () => {
-                    if (!audioPlayer.value) return
+    function openDownloadModal(mid) {
+        selectedMID = mid;
+        document.getElementById('custom-quality').value = ''
+        document.getElementById('download-modal').style.display = 'block';
 
-                    if (isPlaying.value) {
-                        audioPlayer.value.pause()
-                    } else {
-                        audioPlayer.value.play()
-                    }
-                    isPlaying.value = !isPlaying.value
-                }
-
-                const updateProgress = () => {
-                    if (!audioPlayer.value) return
-                    playProgress.value = (audioPlayer.value.currentTime / audioPlayer.value.duration) * 100
-                }
-
-                const downloadMusic = async (id) => {
-                    if (isLoadingMusic.value) return
-
-                    isLoadingMusic.value = true
-                    try {
-                        const response = await fetch(`https://api.lolimi.cn/API/qqdg/?id=${id}`)
-                        const data = await response.json()
-
-                        if (data.data.url) {
-                            const link = document.createElement('a')
-                            link.href = data.data.url
-                            link.download = `${data.data.song}.mp3`
-                            document.body.appendChild(link)
-                            link.click()
-                            document.body.removeChild(link)
-                        } else {
-                            alert('无法下载该音乐，可能需要付费或暂不可用。')
-                        }
-                    } catch (error) {
-                        console.error('下载失败:', error)
-                        alert('下载失败，请稍后重试。')
-                    } finally {
-                        isLoadingMusic.value = false
-                    }
-                }
-
-                const searchWithHistory = (query) => {
-                    searchQuery.value = query
-                    searchMusic()
-                }
-
-                onUnmounted(() => {
-                    if (audioPlayer.value) {
-                        audioPlayer.value.removeEventListener('timeupdate', updateProgress)
-                        audioPlayer.value.pause()
-                    }
-                })
-
-                return {
-                    searchQuery,
-                    isSearching,
-                    isLoadingMusic,
-                    musicList,
-                    searchHistory,
-                    isPlaying,
-                    playProgress,
-                    currentPlayingId,
-                    searchMusic,
-                    playMusic,
-                    downloadMusic,
-                    searchWithHistory
-                }
+        // 默认选中设置的默认下载音质
+        const defaultDownloadQuality = document.getElementById('default-download-quality').value;
+        const qualityRadios = document.querySelectorAll('input[name="download-quality"]');
+        qualityRadios.forEach(radio => {
+            if (radio.value === defaultDownloadQuality) {
+                radio.checked = true;
             }
-        }).mount('#app')
+        });
 
-        document.getElementById("year").textContent = new Date().getFullYear();
-    </script>
+        // 绑定事件监听器
+        qualityRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.checked) {
+                    document.getElementById('custom-quality').value = '';
+                }
+            });
+        });
+
+        document.getElementById('custom-quality').addEventListener('input', () => {
+            qualityRadios.forEach(radio => {
+                radio.checked = false;
+            });
+        });
+    }
+
+    function closeDownloadModal() {
+        document.getElementById('download-modal').style.display = 'none';
+    }
+
+    function downloadSelectedQuality() {
+        const qualityRadios = document.querySelectorAll('input[name="download-quality"]');
+        let quality = null;
+        for (const radio of qualityRadios) {
+            if (radio.checked) {
+                quality = radio.value;
+                break;
+            }
+        }
+        const customQuality = document.getElementById('custom-quality').value;
+        if (customQuality && customQuality >= 1 && customQuality <= 14) {
+            quality = customQuality;
+        }
+        if (quality) {
+            downloadSong(selectedMID, quality);
+        } else {
+            alert('请选择或输入有效的音质级别。');
+        }
+        closeDownloadModal();
+    }
+
+    function searchSongs() {
+        const searchType = document.getElementById('search-type').value;
+        const keyword = document.getElementById('search-input').value;
+        let url;
+
+        if (!keyword) return
+
+        if (searchType === 'keyword') {
+            url = `https://api.lolimi.cn/API/qqdg/?word=${encodeURIComponent(keyword)}`;
+        } else if (searchType === 'mid') {
+            url = `https://api.lolimi.cn/API/qqdg/?mid=${encodeURIComponent(keyword)}&p=4`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200) {
+                    displaySongs(data.data, keyword);
+                } else {
+                    alert('搜索失败，请重试。');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('搜索失败，请重试。');
+            });
+    }
+
+    function displaySongs(songs, keyword) {
+        const songList = document.getElementById('song-list');
+        songList.innerHTML = '';
+
+        if (Array.isArray(songs)) {
+            songs.forEach(song => {
+                const songItem = document.createElement('div');
+                songItem.className = 'song-item';
+                songItem.innerHTML = `
+                    <img src="${song.cover}" alt="${song.song}">
+                    <div class="info">
+                        <div>${song.song} - ${song.singer}</div>
+                        <div>专辑: ${song.album}</div>
+                        <div>MID: ${song.mid} <button onclick="copyMID('${song.mid}', this)">复制</button></div>
+                    </div>
+                    <div class="actions">
+                        <button onclick="playSong('${song.mid}')">播放</button>
+                        <button onclick="openDownloadModal('${song.mid}')">下载</button>
+                    </div>
+                `;
+                songList.appendChild(songItem);
+            });
+        } else if (typeof songs === 'object' && songs !== null) {
+            const song = songs;
+            const songItem = document.createElement('div');
+            songItem.className = 'song-item';
+            songItem.innerHTML = `
+                <img src="${song.cover}" alt="${song.song}">
+                <div class="info">
+                    <div>${song.song} - ${song.singer}</div>
+                    <div>专辑: ${song.album}</div>
+                    <div>MID: ${keyword} <button onclick="copyMID('${keyword}', this)">复制</button></div>
+                </div>
+                <div class="actions">
+                    <button onclick="playSong('${keyword}')">播放</button>
+                    <button onclick="openDownloadModal('${keyword}')">下载</button>
+                </div>
+            `;
+            songList.appendChild(songItem);
+        } else {
+            alert('搜索结果无效，请重试。');
+        }
+    }
+
+    function playSong(mid) {
+        const defaultPlayQuality = document.getElementById('default-play-quality').value;
+        let quality = parseInt(defaultPlayQuality);
+
+        function tryPlay(quality) {
+            const url = `https://api.lolimi.cn/API/qqdg/?mid=${mid}&q=${quality}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200 && data.data.url) {
+                        const audioPlayer = document.getElementById('audio-player');
+                        audioPlayer.pause(); // 先暂停当前音频
+                        audioPlayer.src = data.data.url;
+                        audioPlayer.load(); // 先加载音频
+                        // 添加一个短暂的延迟
+                        setTimeout(() => {
+                            audioPlayer.play().catch(error => {
+                                console.error('播放失败:', error);
+                                alert('播放失败，请重试。');
+                            });
+                        }, 500);
+                        currentSong = data.data;
+                        updatePlayerInfo();
+                    } else if (quality < 14) {
+                        tryPlay(quality + 1); // 尝试下一个音质
+                    } else {
+                        alert('无法播放，所有音质均为空。');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('播放失败，请重试。');
+                });
+        }
+
+        tryPlay(quality);
+    }
+
+    function downloadSong(mid, quality) {
+        const url = `https://api.lolimi.cn/API/qqdg/?mid=${mid}&q=${quality}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 200 && data.data.url) {
+                    // 将HTTP URL转换为HTTPS URL
+                    const secureUrl = data.data.url.replace(/^http:\/\//i, 'https://');
+                    const fileName = `${data.data.singer} - ${data.data.song}.${secureUrl.split('.').pop().split('?')[0]}`;
+
+                    getOSSBlobResource(secureUrl).then(res => {
+                        saveFile(res, fileName);
+                    });
+                } else {
+                    alert('无法下载，选定的音质为空。');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('下载失败，请重试。');
+            });
+    }
+
+    function getOSSBlobResource(url) {
+        return fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache'
+        }).then(response => {
+            if (response.ok) {
+                return response.blob();
+            } else {
+                throw new Error('Network response was not ok.');
+            }
+        });
+    }
+
+    function saveFile(data, fileName) {
+        const exportBlob = new Blob([data]);
+        const saveLink = document.createElement('a');
+        document.body.appendChild(saveLink);
+        saveLink.style.display = 'none';
+        const urlObject = window.URL.createObjectURL(exportBlob);
+        saveLink.href = urlObject;
+        saveLink.download = fileName;
+        saveLink.click();
+        document.body.removeChild(saveLink);
+    }
+
+    function updatePlayerInfo() {
+        const player = document.getElementById('player');
+        const songInfo = document.getElementById('song-info');
+        if (currentSong) {
+            player.querySelector('audio').src = currentSong.url;
+            songInfo.innerText = `${currentSong.song} - ${currentSong.singer}`;
+        } else {
+            player.querySelector('audio').src = '';
+            songInfo.innerText = '';
+        }
+    }
+
+    function copyMID(mid, button) {
+        navigator.clipboard.writeText(mid).then(() => {
+            button.innerText = '已复制';
+            button.disabled = true;
+            setTimeout(() => {
+                button.innerText = '复制';
+                button.disabled = false;
+            }, 1000);
+        }).catch(err => {
+            console.error('无法复制MID:', err);
+            alert('无法复制MID，请手动复制。');
+        });
+    }
+
+    window.onload = loadSettings;
+</script>
 </body>
 
 </html>
