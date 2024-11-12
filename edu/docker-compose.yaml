@@ -1,0 +1,10 @@
+version: '3.3'
+
+services:
+  octopus:
+    image: registry.cn-shanghai.aliyuncs.com/koala888/web-octopus-admin:4.7.9
+    container_name: octopus
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./logs:/data/octopus/logs
