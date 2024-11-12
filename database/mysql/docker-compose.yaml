@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   mysql:
-    image: docker.repo.swifer.co/bitnami/mysql:5.7
+    image: registry.cn-shanghai.aliyuncs.com/koala888/mysql:5.7
     container_name: mysql
     ports:
       - "3306:3306"
