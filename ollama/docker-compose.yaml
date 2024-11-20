@@ -9,8 +9,3 @@ services:
     volumes:
       - ./data:/root/.ollama
     restart: always
-    networks:
-      - docker
-networks:
-  docker:
-    external: true

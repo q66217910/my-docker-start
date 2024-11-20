@@ -1,6 +1,6 @@
-databaseName: backstage_server
+databaseName: rdp
 dataSources:
-  backstage:
-    url: jdbc:postgresql://192.168.3.44:32112/backstage_server?useUnicode=true&characterEncoding=utf8&currentSchema=public&stringtype=unspecified&autosave=always
-    username: wftapp
-    password: wft2022
+  rdp:
+    url: jdbc:mysql://192.168.1.66:3306/rdp_demo_test?useUnicode=true&characterEncoding=utf8&currentSchema=public&stringtype=unspecified&autosave=always
+    username: lzdba
+    password: dfksdkf
