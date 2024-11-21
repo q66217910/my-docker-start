@@ -2,7 +2,8 @@ version: "3"
 
 services:
   memos:
-    image: registry.cn-shanghai.aliyuncs.com/koala888/tools:memos
+    #image: neosmemo/memos:stable
+    image: registry.cn-shanghai.aliyuncs.com/koala888/tools:memos-0.23.0-rc.1
     container_name: memos
     restart: always
     ports:
