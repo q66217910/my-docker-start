@@ -9,7 +9,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /home/1panel:/var/lib/docker/volumes
-      - /opt/1panel:/opt
+      - /opt:/opt
       - /root:/root
     environment:
       - TZ=Asia/Shanghai
