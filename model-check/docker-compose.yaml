@@ -1,0 +1,77 @@
+# Model Check - Docker Compose Configuration
+# https://github.com/chxcodepro/model-check
+#
+# Usage (通过 COMPOSE_PROFILES 控制启动哪些服务):
+#   全本地：    COMPOSE_PROFILES="local"        → PostgreSQL + Redis
+#   云数据库：  COMPOSE_PROFILES="redis"        → 仅 Redis（数据库用云端）
+#   云 Redis：  COMPOSE_PROFILES="db"           → 仅 PostgreSQL（Redis 用云端）
+#   全云端：    不设置 COMPOSE_PROFILES          → 都不启动
+#
+# 镜像模式（推荐，无需构建）:
+#   默认使用预构建镜像，快速部署
+#
+# 本地构建模式（开发用）:
+#   BUILD_LOCAL=true docker compose up -d --build
+#
+# Data Persistence:
+#   PostgreSQL data: ./data/postgres
+#   Redis data: ./data/redis
+
+services:
+  # ========================================
+  # Application
+  # ========================================
+  app:
+    image: ${APP_IMAGE:-ghcr.io/chxcodepro/model-check:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: model-check
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false
+      redis:
+        condition: service_healthy
+        required: false
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DOCKER_DATABASE_URL:-postgresql://modelcheck:modelcheck123456@postgres:5432/model_check}
+      - REDIS_URL=${DOCKER_REDIS_URL:-redis://redis:6379}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+      - AUTO_DETECT_ENABLED=${AUTO_DETECT_ENABLED:-false}
+      - DETECT_PROMPT=${DETECT_PROMPT:-1+1=2? yes or no}
+      - GLOBAL_PROXY=${GLOBAL_PROXY:-}
+      - PROXY_API_KEY=${PROXY_API_KEY:-}
+      - AUTO_DETECT_ALL_CHANNELS=${AUTO_DETECT_ALL_CHANNELS:-true}
+      - CRON_SCHEDULE=${CRON_SCHEDULE:-0 0,8,12,16,20 * * *}
+      - CRON_TIMEZONE=${CRON_TIMEZONE:-Asia/Shanghai}
+      - CLEANUP_SCHEDULE=${CLEANUP_SCHEDULE:-0 2 * * *}
+      - LOG_RETENTION_DAYS=${LOG_RETENTION_DAYS:-7}
+      - CHANNEL_CONCURRENCY=${CHANNEL_CONCURRENCY:-5}
+      - MAX_GLOBAL_CONCURRENCY=${MAX_GLOBAL_CONCURRENCY:-30}
+      - DETECTION_MIN_DELAY_MS=${DETECTION_MIN_DELAY_MS:-3000}
+      - DETECTION_MAX_DELAY_MS=${DETECTION_MAX_DELAY_MS:-5000}
+      - WEBDAV_URL=${WEBDAV_URL:-}
+      - WEBDAV_USERNAME=${WEBDAV_USERNAME:-}
+      - WEBDAV_PASSWORD=${WEBDAV_PASSWORD:-}
+      - WEBDAV_FILENAME=${WEBDAV_FILENAME:-}
+    networks:
+      - model-check-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+# ========================================
+# Networks
+# ========================================
+networks:
+  model-check-network:
+    driver: bridge
