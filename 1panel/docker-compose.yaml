@@ -2,7 +2,7 @@ version: '3'
 services:
   1panel:
     image: moelin/1panel:v2
-    container_name: 1panel-v2
+    container_name: 1panel
     restart: always
     ports:
       - "10086:10086"
