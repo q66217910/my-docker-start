@@ -18,6 +18,5 @@ services:
       - PASSWORD=1panel_password
       - ENTRANCE=entrance
       - BASE_DIR=/opt
-      - RESET=true
     labels:
       createdBy: "Apps"
