@@ -18,7 +18,7 @@ services:
       timeout: 5s
       retries: 6
   redis:
-    image: docker.repo.swifer.co/bitnami/redis:7.4
+    image: soldevelo/redis:7.4
     container_name: redis
     environment:
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
